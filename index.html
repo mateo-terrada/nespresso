@@ -1,0 +1,643 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nespresso Hub</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0c0c0c;--s1:#161616;--s2:#1e1e1e;--s3:#282828;--acc:#C8A96E;--acc2:#96772F;--txt:#EDE8DC;--t2:#9A8F7A;--t3:#5a5245;--bdr:#2a2a2a;--yes:#4CAF82;--no:#E05252;--may:#E8C547;--r:8px}
+body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+header{background:var(--s1);border-bottom:1px solid var(--bdr);padding:0 20px;display:flex;align-items:center;gap:20px;height:52px;position:sticky;top:0;z-index:100}
+.logo{font-size:15px;font-weight:700;letter-spacing:1px;color:var(--acc);white-space:nowrap}
+.logo span{color:var(--t2);font-weight:400;font-size:11px;margin-left:6px}
+nav button{background:none;border:none;color:var(--t2);cursor:pointer;padding:6px 13px;border-radius:var(--r);font-size:13px;transition:all .2s}
+nav button.on{background:var(--s3);color:var(--acc)}
+nav button:hover:not(.on){background:var(--s2);color:var(--txt)}
+main{max-width:1400px;margin:0 auto;padding:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:12px}
+.card{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);padding:13px;cursor:pointer;transition:all .2s}
+.card:hover{border-color:var(--acc);transform:translateY(-2px);box-shadow:0 4px 18px rgba(0,0,0,.5)}
+.card-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px}
+.card-name{font-weight:600;font-size:13px;line-height:1.3}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px;flex-shrink:0;margin-left:5px}
+.badge.OL{background:rgba(200,169,110,.15);color:var(--acc);border:1px solid rgba(200,169,110,.3)}
+.badge.VL{background:rgba(110,158,200,.15);color:#6E9EC8;border:1px solid rgba(110,158,200,.3)}
+.card-col{font-size:10px;color:var(--t3);margin-bottom:7px}
+.card-fla{font-size:12px;color:var(--t2);margin-bottom:9px;font-style:italic;line-height:1.4}
+.card-ft{display:flex;align-items:flex-end;justify-content:space-between}
+.ibar-wrap{display:flex;align-items:center;gap:4px}
+.ibar{width:65px;height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
+.ibar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--acc2),var(--acc))}
+.inum{font-size:10px;color:var(--t3)}
+.stars{display:flex;gap:1px}
+.s{font-size:11px}.s.f{color:var(--acc)}.s.h{color:var(--acc);opacity:.5}.s.e{color:var(--s3)}
+.chip{font-size:10px;font-weight:600;padding:2px 7px;border-radius:12px}
+.chip.Yes{background:rgba(76,175,130,.15);color:var(--yes)}
+.chip.No{background:rgba(224,82,82,.15);color:var(--no)}
+.chip.Maybe{background:rgba(232,197,71,.15);color:var(--may)}
+.chip.X{background:rgba(90,82,69,.2);color:var(--t3)}
+.filters{display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+.fi,.fs{background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:var(--r);padding:7px 10px;font-size:12px;outline:none}
+.fi{flex:1;min-width:150px}.fi:focus,.fs:focus{border-color:var(--acc)}
+.fs option{background:var(--s2)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(4px)}
+.modal{background:var(--s1);border:1px solid var(--bdr);border-radius:12px;max-width:570px;width:100%;max-height:90vh;overflow-y:auto}
+.mhd{padding:20px 20px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.mtitle{font-size:19px;font-weight:700;line-height:1.3}
+.mcls{background:none;border:none;color:var(--t2);font-size:22px;cursor:pointer;line-height:1;flex-shrink:0;margin-left:8px}
+.mcls:hover{color:var(--txt)}
+.mbody{padding:16px 20px 20px}
+.drow{display:flex;gap:9px;margin-bottom:12px;flex-wrap:wrap}
+.di{background:var(--s2);border-radius:6px;padding:9px 12px;flex:1;min-width:100px}
+.dl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.dv{font-size:13px;font-weight:600}
+.dnotes{background:var(--s2);border-radius:6px;padding:13px;margin-bottom:13px;font-size:13px;line-height:1.6;color:var(--t2)}
+.ef{display:flex;flex-direction:column;gap:11px}
+.ef label{font-size:11px;color:var(--t2);display:block;margin-bottom:3px}
+.ef textarea{background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:6px;padding:8px 10px;font-size:13px;resize:vertical;min-height:72px;outline:none;width:100%}
+.ef textarea:focus{border-color:var(--acc)}
+.ef select,.efi{background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:6px;padding:7px 10px;font-size:13px;outline:none;width:100%}
+.ef select:focus,.efi:focus{border-color:var(--acc)}
+.sinp{display:flex;gap:3px}
+.sinp button{background:none;border:none;font-size:22px;cursor:pointer;color:var(--s3);transition:color .1s;line-height:1}
+.sinp button.on{color:var(--acc)}
+.btn{border:none;border-radius:var(--r);padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.ba{background:var(--acc);color:#000}.ba:hover{background:var(--acc2);color:#fff}
+.bg{background:none;border:1px solid var(--bdr);color:var(--t2)}.bg:hover{border-color:var(--t2);color:var(--txt)}
+.brow{display:flex;gap:8px;justify-content:flex-end;margin-top:13px}
+.stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.stat{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);padding:11px 16px;flex:1;min-width:100px}
+.stn{font-size:21px;font-weight:700;color:var(--acc)}.stl{font-size:11px;color:var(--t2);margin-top:2px}
+.itbl{width:100%;border-collapse:collapse}
+.itbl th{text-align:left;padding:6px 9px;font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--bdr)}
+.itbl td{padding:8px 9px;border-bottom:1px solid var(--bdr);font-size:13px}
+.itbl tr:hover td{background:var(--s2)}
+.bxc{display:flex;align-items:center;gap:6px}
+.bxc button{background:var(--s3);border:none;color:var(--txt);width:25px;height:25px;border-radius:5px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.bxc button:hover{background:var(--acc);color:#000}
+.bxn{min-width:22px;text-align:center;font-weight:700}
+.low{color:var(--no)}
+.bp{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-top:20px}
+.bptitle{font-size:14px;font-weight:700;margin-bottom:12px;color:var(--acc)}
+.sitem{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--bdr)}
+.sitem:last-child{border-bottom:none}
+.stotal{display:flex;justify-content:space-between;align-items:center;margin-top:9px;padding-top:9px;border-top:1px solid var(--acc2);font-weight:700;font-size:13px}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.rcard{background:var(--s2);border:1px solid var(--bdr);border-radius:var(--r);padding:14px}
+.rcard h3{font-size:14px;font-weight:700;margin-bottom:5px}
+.rcat{font-size:11px;color:var(--t2);margin-bottom:7px;display:flex;align-items:center;gap:4px}
+.cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.fgrid .full{grid-column:1/-1}
+.empty{text-align:center;padding:40px;color:var(--t3)}
+.shdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.stitle{font-size:18px;font-weight:700;color:var(--acc)}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
+@media(max-width:560px){main{padding:10px}.grid{grid-template-columns:1fr 1fr;gap:8px}.card{padding:10px}.fgrid{grid-template-columns:1fr}}
+</style></head><body>
+<header>
+  <div class="logo">☕ NESPRESSO HUB <span>by Teo</span></div>
+  <nav>
+    <button class="on" onclick="go('journal')">📋 Journal</button>
+    <button onclick="go('inventory')">📦 Inventario</button>
+    <button onclick="go('recipes')">🍹 Recetas</button>
+  </nav>
+</header>
+<main id="app"></main>
+<div id="ov" class="ov" style="display:none" onclick="maybeClose(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mhd"><div id="mt" class="mtitle"></div><button class="mcls" onclick="closeModal()">×</button></div>
+    <div id="mb" class="mbody"></div>
+  </div>
+</div>
+<script>
+const COFFEES=[
+  {id:'chiaro_bc',s:'OL',n:'Chiaro',col:'Barista Creations',i:null,fla:'Sweet caramel, perfect with milk',sz:'Espresso / Cappuccino',p:0.53,milk:1,dec:0,lim:0,exo:0,ro:'Light',an:'Warm caramel and sweet biscuit notes with milk.'},
+  {id:'scuro_bc',s:'OL',n:'Scuro',col:'Barista Creations',i:null,fla:'Harmonious coffee, perfect with milk',sz:'Espresso / Cappuccino',p:0.53,milk:1,dec:0,lim:0,exo:0,ro:'Medium',an:'Toasted grain and nut notes emerge with milk.'},
+  {id:'corto_bc',s:'OL',n:'Corto',col:'Barista Creations',i:null,fla:'Strong espresso perfect with milk',sz:'Espresso / Cappuccino',p:0.53,milk:1,dec:0,lim:0,exo:0,ro:'Dark',an:'Strong espresso with a touch of sweetness.'},
+  {id:'vaniglia',s:'OL',n:'Vaniglia',col:'Aromatizado',i:null,fla:'Custard and vanilla',sz:'Lungo / Cappuccino',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Silky flavored coffee with custard and vanilla.'},
+  {id:'vaniglia_dec',s:'OL',n:'Vaniglia Decaffeinato',col:'Aromatizado',i:null,fla:'Vanilla and creamy',sz:'Lungo / With Milk',p:0.58,milk:0,dec:1,lim:0,exo:0,ro:'Light',an:'Silky decaffeinated coffee with creamy vanilla.'},
+  {id:'caramello',s:'OL',n:'Caramello',col:'Aromatizado',i:null,fla:'Creamy and caramel',sz:'Lungo / Cappuccino',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Creamy flavored coffee with caramel.'},
+  {id:'cioccolatino',s:'OL',n:'Cioccolatino',col:'Aromatizado',i:null,fla:'Creamy and chocolate',sz:'Lungo / Cappuccino',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Lively blend with rich dark chocolate.'},
+  {id:'nocciola',s:'OL',n:'Nocciola',col:'Aromatizado',i:null,fla:'Rich and nutty',sz:'Lungo / Cappuccino',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Rich roasted hazelnut in perfect balance.'},
+  {id:'amaretti',s:'OL',n:'Amaretti',col:'Aromatizado',i:6,fla:'Almond and biscuit',sz:'Espresso / Lungo',p:0.47,milk:0,dec:0,lim:0,exo:1,ro:'Light',an:'Almond with vanilla. South American Arabicas. (B2B)'},
+  {id:'venezia',s:'OL',n:'Ispirazione Venezia',col:'Inspirazione Italiana',i:8,fla:'Full body with a bitter hint',sz:'Espresso',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Balanced with a dense body.'},
+  {id:'livanto',s:'OL',n:'Livanto',col:'Inspirazione Italiana',i:6,fla:'Balanced coffee with caramel notes',sz:'Espresso',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Medium roast; caramel and grain notes, round mouthfeel.'},
+  {id:'roma',s:'OL',n:'Ispirazione Roma',col:'Inspirazione Italiana',i:8,fla:'Balanced with woody notes and fresh accents',sz:'Espresso',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Light roast; woody, toasted, soft notes.'},
+  {id:'ristretto',s:'OL',n:'Ristretto',col:'Inspirazione Italiana',i:10,fla:'Intense dark with a subtle fruit contrast',sz:'Espresso',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Dark+Light Mix',an:'Long and short roast combo; full body and fresh fruit tones.'},
+  {id:'ristretto_dec',s:'OL',n:'Ristretto Decaffeinato',col:'Inspirazione Italiana',i:10,fla:'Ristretto intensity, without caffeine',sz:'Espresso',p:0.50,milk:0,dec:1,lim:0,exo:0,ro:'Dark',an:'Intense contrasting character (decaf).'},
+  {id:'kazaar',s:'OL',n:'Kazaar',col:'Inspirazione Italiana',i:12,fla:'Exceptionally intense and syrupy',sz:'Espresso',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Dark roasted with spicy notes and a robusta kick.'},
+  {id:'napoli',s:'OL',n:'Ispirazione Napoli',col:'Inspirazione Italiana',i:13,fla:'Intense with a full body',sz:'Espresso',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Intensely roasted with a full body.'},
+  {id:'arpeggio',s:'OL',n:'Arpeggio',col:'Inspirazione Italiana',i:9,fla:'Intense with cocoa notes',sz:'Espresso / With Milk',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Intense roasted tones and subtle cocoa accents.'},
+  {id:'arpeggio_dec',s:'OL',n:'Arpeggio Decaffeinato',col:'Inspirazione Italiana',i:9,fla:'Arpeggio without caffeine',sz:'Espresso',p:0.50,milk:0,dec:1,lim:0,exo:0,ro:'Dark',an:'Arpeggio without caffeine.'},
+  {id:'dharkan',s:'OL',n:'Dharkan',col:'Inspirazione Italiana',i:11,fla:'Cocoa and Toasted Cereal',sz:'Espresso',p:null,milk:0,dec:0,lim:0,exo:1,ro:'Dark',an:'Pure Arabica, intense but not harsh. Velvety. (Discontinued / temp relaunch)'},
+  {id:'pumpkin_ol',s:'OL',n:'Pumpkin Spice Cake',col:'Limited Edition',i:null,fla:'Sweet pumpkin and spices',sz:'Lungo',p:0.59,milk:0,dec:0,lim:1,exo:0,ro:'Light',an:'Cereal base with warm pumpkin, cinnamon and clove.'},
+  {id:'maple_ol',s:'OL',n:'Maple Pecan',col:'Limited Edition',i:null,fla:'Maple syrup and pecans',sz:'Lungo',p:0.59,milk:0,dec:0,lim:1,exo:0,ro:'Light',an:'South American Arabica with maple syrup and toasted pecan.'},
+  {id:'fc_espresso',s:'OL',n:'FC Collection Espresso',col:'Limited Edition',i:7,fla:'Grains and ripe fruit',sz:'Espresso',p:0.59,milk:0,dec:0,lim:1,exo:0,ro:'Medium',an:'Full-bodied; cereal notes and ripe red fruit accents.'},
+  {id:'fc_almond',s:'OL',n:'FC Sweet Almond & Hibiscus',col:'Limited Edition',i:null,fla:'Almond and Hibiscus',sz:'Espresso / Lungo',p:0.59,milk:0,dec:0,lim:1,exo:0,ro:'Light',an:'Smooth espresso with floral hibiscus and creamy almond.'},
+  {id:'fc_tamarind',s:'OL',n:'FC Cinnamon & Candied Tamarind',col:'Limited Edition',i:null,fla:'Cinnamon and Tamarind',sz:'Espresso / Lungo',p:0.59,milk:0,dec:0,lim:1,exo:0,ro:'Medium',an:'Spicy cinnamon meets exotic candied tamarind.'},
+  {id:'tanzania_ol',s:'OL',n:'Tanzania',col:'Limited Edition',i:5,fla:'Red fruits and dried grain',sz:'Espresso / Lungo',p:0.59,milk:0,dec:0,lim:1,exo:0,ro:'Medium',an:'From Mt Kilimanjaro. Vibrant, fruity, acidic.'},
+  {id:'ethiopia_ol',s:'OL',n:'Ethiopia',col:'Master Origins',i:4,fla:'Floral and light',sz:'Espresso / Lungo',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Dry-processed Arabica. Aromatic with jam and orange blossom.'},
+  {id:'nicaragua',s:'OL',n:'Nicaragua',col:'Master Origins',i:5,fla:'Sweet and balanced',sz:'Espresso / Lungo',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:"Black-honey method. Soft, balanced, slightly sweet."},
+  {id:'colombia_ol',s:'OL',n:'Colombia',col:'Master Origins',i:6,fla:'Fruity and sparkling',sz:'Espresso / Lungo',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Late-harvested Colombian Arabica. Fruity, bright, sparkling.'},
+  {id:'indonesia',s:'OL',n:'Indonesia',col:'Master Origins',i:8,fla:'Rich and woody',sz:'Espresso / Lungo',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Wet-hulled method. Soft texture and rich taste.'},
+  {id:'india',s:'OL',n:'India',col:'Master Origins',i:11,fla:'Intense with a spicy character',sz:'Espresso / Lungo',p:0.55,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Monsooning technique. Heavy body and spicy character.'},
+  {id:'brasil',s:'OL',n:'Brasil',col:'Master Origins',i:7,fla:'Caramel and Cereal',sz:'Espresso / Lungo',p:0.57,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Split roast technique. Medium roast with a distinct fermented note.'},
+  {id:'congo',s:'OL',n:'Kahawa Ya Congo',col:'Reviving Origins',i:7,fla:'Cereal and fruity',sz:'Espresso / Lungo',p:0.64,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'50/50 split roast. Both splits dark and short.'},
+  {id:'no20',s:'OL',n:'No. 20',col:'Master Origins',i:null,fla:'Orange blossom and Citrus',sz:'Espresso',p:2.50,milk:0,dec:0,lim:0,exo:1,ro:'Light',an:'Colombian luxury. 20 years of research. Floral, citric, extremely exclusive.'},
+  {id:'galapagos',s:'OL',n:'Galápagos (Special Reserve)',col:'Master Origins',i:7,fla:'Biscuit and cacao',sz:'Espresso',p:null,milk:0,dec:0,lim:0,exo:1,ro:'Medium',an:'Volcanic soil of the Galápagos. Sweet cereal and subtle cacao.'},
+  {id:'hawaii',s:'OL',n:'Hawaii Kona (Special Reserve)',col:'Master Origins',i:5,fla:'Fruity, tropical, exotic',sz:'Espresso',p:null,milk:0,dec:0,lim:0,exo:1,ro:'Light',an:'From the slopes of Mauna Loa. Exotic, tropical, silky finish.'},
+  {id:'nepal',s:'OL',n:'Nepal Lamjung',col:'Master Origins',i:8,fla:'Intense roast and cereal',sz:'Espresso',p:null,milk:0,dec:0,lim:0,exo:1,ro:'Medium',an:'From Himalayan banks. Smooth, floral texture with toasted notes. (B2B)'},
+  {id:'zambia',s:'OL',n:'Zambia Mory Sacko',col:'Master Origins',i:7,fla:'Exotic fruits and floral',sz:'Espresso',p:null,milk:0,dec:0,lim:1,exo:1,ro:'Light',an:'Limited ed. with chef Mory Sacko. Bright, fruity, floral.'},
+  {id:'peru',s:'OL',n:'Perú Organic',col:'Master Origins',i:6,fla:'Citrus fruits',sz:'Espresso / Lungo',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Organic Arabica from Andean mountains. Grain and fruit notes.'},
+  {id:'paris',s:'OL',n:'Paris Espresso',col:'World Explorations',i:6,fla:'Grain and biscuit-like, touch of citrus',sz:'Espresso / With Milk',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Intense roast, full body. Roasted, woody and grain accents.'},
+  {id:'istanbul',s:'OL',n:'Istanbul Espresso',col:'World Explorations',i:8,fla:'Roasted with a fruity accent',sz:'Espresso',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Complex aroma, balanced bitter/fruity. Sweet almond aftertaste.'},
+  {id:'rio',s:'OL',n:'Rio de Janeiro Espresso',col:'World Explorations',i:9,fla:'Spicy and pungent',sz:'Espresso',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Split-roast Arabicas. Full body, strong roasted tones, exotic spice.'},
+  {id:'buenos_aires',s:'OL',n:'Buenos Aires Lungo',col:'World Explorations',i:4,fla:'Sweet with grain notes',sz:'Lungo',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Mildest and sweetest Lungo in World Explorations.'},
+  {id:'shanghai',s:'OL',n:'Shanghai Lungo',col:'World Explorations',i:5,fla:'Fruity with a slight acidity',sz:'Lungo',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Fruity notes, woody aromas, soft body.'},
+  {id:'tokyo',s:'OL',n:'Tokyo Lungo',col:'World Explorations',i:6,fla:'Grain notes and floral',sz:'Lungo',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Mild character but with exotic aromas.'},
+  {id:'cape_town',s:'OL',n:'Cape Town Lungo',col:'World Explorations',i:10,fla:'Powerful with woody tones',sz:'Lungo',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Powerful coffee with caramelized woody notes.'},
+  {id:'vienna_dec',s:'OL',n:'Vienna Lungo Decaffeinato',col:'World Explorations',i:6,fla:'Round and smooth',sz:'Lungo',p:0.52,milk:0,dec:1,lim:0,exo:0,ro:'Medium',an:'Delightfully balanced lungo (decaf).'},
+  {id:'vienna',s:'OL',n:'Vienna Lungo',col:'World Explorations',i:6,fla:'Balanced with grain notes',sz:'Lungo',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Smooth, round, very balanced with grain notes.'},
+  {id:'miami',s:'OL',n:'Miami Espresso',col:'World Explorations',i:9,fla:'Cereal and toasted',sz:'Espresso',p:null,milk:0,dec:0,lim:0,exo:1,ro:'Dark',an:'Intensely roasted cereal and woody. Peppery and tobacco leaf aromas.'},
+  {id:'stockholm',s:'OL',n:'Stockholm Lungo',col:'World Explorations',i:8,fla:'Rich and full flavor',sz:'Lungo',p:0.49,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Rich coffee with roasted tones and round texture.'},
+  {id:'cosi',s:'OL',n:'Cosi',col:'Original Collection',i:4,fla:'Grain notes and subtle fruity accents',sz:'Lungo',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Surprising combination of ripe fruit and sweet grains.'},
+  {id:'volutto',s:'OL',n:'Volluto',col:'Original Collection',i:4,fla:'Sweet and fruity',sz:'Espresso',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Sweet and fruity profile.'},
+  {id:'volutto_dec',s:'OL',n:'Volluto Decaffeinato',col:'Original Collection',i:4,fla:'Volluto without caffeine',sz:'Espresso',p:0.50,milk:0,dec:1,lim:0,exo:0,ro:'Light',an:'Decaffeinated version of Volluto.'},
+  {id:'capriccio',s:'OL',n:'Capriccio',col:'Original Collection',i:5,fla:'Rich and cereal',sz:'Espresso',p:0.47,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Rich and cereal profile.'},
+  {id:'aosta_hc',s:'OL',n:'Aosta',col:'Home Compostables',i:5,fla:'Mild and balanced',sz:'Espresso',p:0.52,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Light roasted, balanced espresso.'},
+  {id:'sicilia_hc',s:'OL',n:'Sicilia',col:'Home Compostables',i:8,fla:'Dark and intense',sz:'Espresso',p:0.52,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Intense dark roasted espresso.'},
+  {id:'palermo_hc',s:'OL',n:'Palermo',col:'Home Compostables',i:10,fla:'Spicy and woody',sz:'Espresso',p:0.52,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Spicy and woody dark roasted espresso.'},
+  {id:'decaf_hc',s:'OL',n:'Decaffeinato HC',col:'Home Compostables',i:7,fla:'Dark roast and cereal',sz:'Espresso',p:0.54,milk:0,dec:1,lim:0,exo:0,ro:'Dark',an:'Dark roast decaf with cereal notes.'},
+  // VERTUO
+  {id:'il_caffe_vl',s:'VL',n:'Il Caffè',col:'Espresso',i:11,fla:'Classic Italian, spicy and cereal',sz:'Espresso (40ml)',p:0.52,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Punchy, smooth, velvety. Roasted cereal aromas.'},
+  {id:'diavolitto_vl',s:'VL',n:'Diavolitto',col:'Espresso',i:11,fla:'Intense and powerful',sz:'Espresso (40ml)',p:0.52,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Highly intense espresso with oak wood and leather notes.'},
+  {id:'altissio',s:'VL',n:'Altissio',col:'Espresso',i:9,fla:'Full-bodied and creamy',sz:'Espresso (40ml)',p:0.52,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Full-bodied, thick crema. Cocoa and roasted notes.'},
+  {id:'altissio_dec',s:'VL',n:'Altissio Decaffeinato',col:'Espresso',i:9,fla:'Full-bodied and creamy (Decaf)',sz:'Espresso (40ml)',p:0.55,milk:0,dec:1,lim:0,exo:0,ro:'Dark',an:'Decaffeinated Altissio. Rich roasted notes.'},
+  {id:'orafio',s:'VL',n:'Orafio',col:'Espresso',i:6,fla:'Warm cereal and caramel',sz:'Espresso (40ml)',p:0.52,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Light body with licorice and caramel. Low bitterness.'},
+  {id:'voltesso',s:'VL',n:'Voltesso',col:'Espresso',i:4,fla:'Light and sweet',sz:'Espresso (40ml)',p:0.52,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Mild and distinctively sweet with biscuity notes.'},
+  {id:'de_scuro',s:'VL',n:'Double Espresso Scuro',col:'Double Espresso',i:11,fla:'Dark and bold',sz:'Double Espresso (80ml)',p:0.59,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Highly roasted with rich smoky and cocoa notes.'},
+  {id:'de_chiaro',s:'VL',n:'Double Espresso Chiaro',col:'Double Espresso',i:8,fla:'Dense and wild',sz:'Double Espresso (80ml)',p:0.59,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Intense and short roast. Woody and earthy notes.'},
+  {id:'de_dolce',s:'VL',n:'Double Espresso Dolce',col:'Double Espresso',i:5,fla:'Smooth and cereal',sz:'Double Espresso (80ml)',p:0.59,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Deliciously sweet with malted cereal notes.'},
+  {id:'fortado',s:'VL',n:'Fortado',col:'Gran Lungo',i:8,fla:'Intense and full-bodied',sz:'Gran Lungo (150ml)',p:0.62,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Most intense Gran Lungo. Cocoa and oak wood notes.'},
+  {id:'fortado_dec',s:'VL',n:'Fortado Decaffeinato',col:'Gran Lungo',i:8,fla:'Intense and full-bodied (Decaf)',sz:'Gran Lungo (150ml)',p:0.65,milk:0,dec:1,lim:0,exo:0,ro:'Dark',an:'Decaf Fortado. Powerful with cocoa and woody notes.'},
+  {id:'arondio',s:'VL',n:'Arondio',col:'Gran Lungo',i:6,fla:'Cereal and mild',sz:'Gran Lungo (150ml)',p:0.62,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Mild with cereal notes and a touch of acidity.'},
+  {id:'inizio',s:'VL',n:'Inizio',col:'Gran Lungo',i:4,fla:'Floral and cereal',sz:'Gran Lungo (150ml)',p:0.62,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Juicy and light. Wild floral notes and toasted cereal.'},
+  {id:'costa_rica_vl',s:'VL',n:'Costa Rica',col:'Master Origins (VL)',i:7,fla:'Malty and sweet',sz:'Gran Lungo (150ml)',p:0.72,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Washed in mineral hot spring waters. Malty and sweet cereal.'},
+  {id:'ethiopia_vl',s:'VL',n:'Ethiopia',col:'Master Origins (VL)',i:4,fla:'Floral and delicate',sz:'Gran Lungo (150ml)',p:0.72,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Dry processed Arabica. Floral aromas with a hint of musk.'},
+  {id:'intenso_vl',s:'VL',n:'Intenso',col:'Mug',i:9,fla:'Deep and dense',sz:'Mug (230ml)',p:0.69,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Brown sugar and roasted notes.'},
+  {id:'stormio',s:'VL',n:'Stormio',col:'Mug',i:8,fla:'Rich and strong',sz:'Mug (230ml)',p:0.69,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Highly roasted. Spicy, woody and cereal notes.'},
+  {id:'odacio',s:'VL',n:'Odacio',col:'Mug',i:7,fla:'Bold and lively',sz:'Mug (230ml)',p:0.69,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Full-bodied with fruitiness and delicate acidity.'},
+  {id:'melozio',s:'VL',n:'Melozio',col:'Mug',i:6,fla:'Smooth and balanced',sz:'Mug (230ml)',p:0.69,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Classic cereal note with honeyed sweetness.'},
+  {id:'melozio_dec',s:'VL',n:'Melozio Decaffeinato',col:'Mug',i:6,fla:'Smooth and balanced (Decaf)',sz:'Mug (230ml)',p:0.75,milk:0,dec:1,lim:0,exo:0,ro:'Medium',an:'Decaf. Sweet cereal and honey notes.'},
+  {id:'solelio',s:'VL',n:'Solelio',col:'Mug',i:2,fla:'Fruity and light',sz:'Mug (230ml)',p:0.69,milk:0,dec:0,lim:0,exo:0,ro:'Very Light',an:'Gentlest start. Toasted cereal and lively fruit notes.'},
+  {id:'mexico_vl',s:'VL',n:'Mexico',col:'Master Origins (VL)',i:7,fla:'Intense and spicy',sz:'Mug (230ml)',p:0.76,milk:0,dec:0,lim:0,exo:0,ro:'Dark',an:'Double washed Robusta. Roasted and spicy wood notes.'},
+  {id:'colombia_vl',s:'VL',n:'Colombia',col:'Master Origins (VL)',i:5,fla:'Juicy and fruity',sz:'Mug (230ml)',p:0.76,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Classic Colombian profile. Sweet winey and red fruit notes.'},
+  {id:'bianco_piccolo',s:'VL',n:'Bianco Piccolo',col:'Barista Creations (VL)',i:null,fla:'Sweet and smooth (for milk)',sz:'Espresso (40ml)',p:0.55,milk:1,dec:0,lim:0,exo:0,ro:'Light',an:'Expertly crafted for cappuccinos and latte macchiatos.'},
+  {id:'bianco_doppio',s:'VL',n:'Bianco Doppio',col:'Barista Creations (VL)',i:null,fla:'Sweet and caramel (for milk)',sz:'Double Espresso (80ml)',p:0.62,milk:1,dec:0,lim:0,exo:0,ro:'Light',an:'For larger milk recipes. Fruity and biscuit notes.'},
+  {id:'bianco_forte',s:'VL',n:'Bianco Forte',col:'Barista Creations (VL)',i:null,fla:'Dark roast for milk',sz:'Mug (230ml)',p:0.75,milk:1,dec:0,lim:0,exo:0,ro:'Dark',an:'Intense coffee designed for milk. Roasted and cereal notes.'},
+  {id:'sweet_vanilla_vl',s:'VL',n:'Sweet Vanilla',col:'Aromatizado (VL)',i:null,fla:'Vanilla and cereal',sz:'Mug (230ml)',p:0.76,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Classic vanilla flavor over a smooth cereal base.'},
+  {id:'golden_caramel_vl',s:'VL',n:'Golden Caramel',col:'Aromatizado (VL)',i:null,fla:'Caramel and biscuit',sz:'Mug (230ml)',p:0.76,milk:0,dec:0,lim:0,exo:0,ro:'Light',an:'Sweet caramel flavor with biscuity notes.'},
+  {id:'roasted_hazelnut_vl',s:'VL',n:'Roasted Hazelnut',col:'Aromatizado (VL)',i:null,fla:'Hazelnut and roasted',sz:'Mug (230ml)',p:0.76,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Roasted hazelnut flavor with praline notes.'},
+  {id:'festive_de_vl',s:'VL',n:'Festive Double Espresso',col:'Limited Edition (VL)',i:8,fla:'Woody and fruity',sz:'Double Espresso (80ml)',p:0.64,milk:0,dec:0,lim:1,exo:0,ro:'Dark',an:'Arabica blend. Toasted cereal, wood, and ripe red fruits.'},
+  {id:'carafe',s:'VL',n:'Carafe Pour-Over Style',col:'Carafe',i:null,fla:'Smoky and roasted',sz:'Carafe (535ml)',p:1.09,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Intense roasted, smoky and earthy. Only for Next/Creatista.'},
+];
+
+const IT={
+  chiaro_bc:{r:1,w:'No',n:'Muy clarito, casi no se siente el sabor a través de la leche. Parece un latte y apenas le puse una gota.'},
+  scuro_bc:{r:3.5,w:'Yes',n:'Buen blend con leche, se siente bien el sabor a café. Con flat o cortado va como piña.'},
+  corto_bc:{r:2,w:'No',n:'Especiado, parece un india con leche. No es un buen match, no por lo intenso sino por lo especiado.'},
+  vaniglia:{r:1.5,w:'No',n:'Ya el aroma me da demasiado dulce. El café contrasta demasiado con el dulzor de la vainilla.'},
+  vaniglia_dec:{r:4.5,w:'No',n:'Como frappuccino me gusta mucho. Con algo de miel y vanilla syrup.'},
+  caramello:{r:2.5,w:'Maybe',n:'No está mal. No es tan fuerte el sabor a caramelo. Con leche no se siente el caramelo prácticamente.'},
+  cioccolatino:{r:3,w:'Maybe',n:'Me cuesta juzgar un café con sabor. Me gusta más de lo que esperaba. No es súper dulce a pesar del aroma fuerte a chocolate.'},
+  nocciola:{r:3,w:'Maybe',n:'El aroma es muy bueno. De los smakjes es de los que más gustan. Muy sabroso mezclado con vanilla syrup y miel.'},
+  venezia:{r:3.5,w:'Maybe',n:'Buen cuerpo, rico, equilibrado. (rep.) Intenso, tostado más oscuro. Tal vez un poco muy intenso, pero nada terrible.'},
+  livanto:{r:4,w:'Maybe',n:'Me gusta. Un poco biscuit, algo de acidez, pasa fácil. Rico y balanceado. Dulce, un poco de acidez pero no se zarpa.'},
+  roma:{r:3,w:'No',n:'Demasiado balanceado, casi que aburrido. Es un café que pasa fácil pero no sorprende ni destaca.'},
+  ristretto:{r:4,w:'Yes',n:'Un café bien intenso con un dejo frutal. Muy bueno para después de un plato pesado.'},
+  kazaar:{r:1,w:'No',n:'Demasiado bitter, bueno para shock de cafeína por la robusta, pero difícil de tomar. Parece ahumado.'},
+  napoli:{r:2.5,w:'No',n:'Intenso pero no tan especiado, bancable, el tostado oscuro se siente.'},
+  arpeggio:{r:5,w:'Yes',n:'Ese aroma a cacao resalta un montón, muy rico. Café intenso pero sin zarparse con el tostado. Siempre te deja con ganas de más.'},
+  arpeggio_dec:{r:5,w:'Yes',n:'Excelente café de postre. Creo que el normal me gusta más.'},
+  dharkan:{r:3.5,w:'Maybe',n:"Dark roasted but nice and tasty. Not the typical burnt dark roast. You can taste the intensity without it being overwhelming."},
+  pumpkin_ol:{r:2,w:'No',n:'Mucho sabor a canela, con leche puede andar. Solo no es para mí.'},
+  maple_ol:{r:1.5,w:'No',n:'No me gusta para nada. No lo pude ni tomar.'},
+  fc_espresso:{r:4,w:'Yes',n:'Bien intenso pero sin zarparse. Siento las notas a cereales y frutales. Buen mix. (minted mule) Muy buen trago también.'},
+  fc_almond:{r:1.5,w:'No',n:'Muy dulce para mí. Negro no me gusta. Toque frutal/ácido tal vez por la flor de híbisco.'},
+  fc_tamarind:{r:2,w:'No',n:'No es para mí. Me gusta el café de fondo pero el tamarind es muy invasivo.'},
+  ethiopia_ol:{r:3.5,w:'Maybe',n:'Aroma increíble, gusto muy frutal (ligeramente demasiado para mi gusto). Tiene una historia que contar, algo distinto.'},
+  nicaragua:{r:3,w:'Maybe',n:'No me sorprende el café, interesante para tener algo distinto pero demasiado simple.'},
+  colombia_ol:{r:5,w:'Yes',n:'Últimamente me viene gustando mucho. Le encontrás el fruitiness pero no se pasa de acidez. (d/e) Todavía rico pero empieza a perder cuerpo.'},
+  indonesia:{r:5,w:'Yes',n:'Un rico café, fuerte y con notas a madera, muy baja acidez. (d/e) Prácticamente no pierde el sabor. Resaltan bien las notas.'},
+  india:{r:3.5,w:'Maybe',n:'Muy intenso. Sabor medio quemado pero es tomable. Es duro de pasar. La historia le aporta puntaje.'},
+  tanzania_ol:{r:2.5,w:'No',n:'No debería ser un 5 en intensidad. No me encanta, demasiado ácido e intenso a la vez.'},
+  brasil:{r:4,w:'Yes',n:'Un café interesante, algo distinto. Liviano pero rico. Aroma particular, un poco frutal.'},
+  congo:{r:3,w:'No',n:'Algo de acidez pero intenso al mismo tiempo. El aftertaste te deja el tostado oscuro marcado. Le falta cuerpo.'},
+  no20:{r:5,w:'Yes',n:'Aroma frutal. Crema clara. Café ácido (pero no zarpado, acidez natural, rica), no intenso. Wow, algo distinto.'},
+  galapagos:{r:3.5,w:'Maybe',n:'Aroma muy rico, notas a cacao. Sabor intenso, aftertaste muy rico. No me sorprendió tanto. Cuerpo liviano.'},
+  hawaii:{r:4,w:'Maybe',n:'Aroma super frutal. Me da notas a cherries/berries. Dulzón, baja intensidad. Un café más fresco, super distinto.'},
+  nepal:{r:4,w:'Maybe',n:'Aroma suave. Crema muy pareja. Café frutal, baja intensidad, pasa fácil, cuerpo no tanto. Liviano, rico.'},
+  zambia:{r:4,w:'Yes',n:'Muy frutal, mix de acidez y frutas. Aroma como a cerezas o moras. Baja intensidad. Realmente tiene un sabor distinto.'},
+  peru:{r:3.5,w:'Maybe',n:'Really sour. Interesting for sure. Citric and sour. Acidity levels very high. Light crema.'},
+  amaretti:{r:2.5,w:'No',n:'El aroma es muy sabroso. Café liviano, poco cuerpo. El dulce del amaretti no se zarpa, pero no me encanta el gusto dulzón.'},
+  paris:{r:4,w:'Yes',n:'Con leche es demasiado suave, como espresso puede andar, nada sorprendente pero redondo.'},
+  istanbul:{r:3,w:'No',n:'Sin dudas un mix interesante, tal vez spicy y bitter, pero es pasable para algo distinto.'},
+  rio:{r:3,w:'No',n:'Cada vez que lo pruebo lo siento distinto. Sin dudas un café diferente.'},
+  buenos_aires:{r:3,w:'No',n:'Mucho aroma a cereales tostados, muy liviano. No me llama demasiado. (rep.) Lo siento más frutal que por lo general.'},
+  shanghai:{r:3.5,w:'Maybe',n:'Me sorprendió. Es cítrico pero pasa bien. Un poco liviano de cuerpo para mi gusto.'},
+  tokyo:{r:4,w:'Maybe',n:'Rico aroma, buen tostado. Frutal/ácido pero bien, no se zarpa. Me recuerda al colombia, con menos cuerpo.'},
+  cape_town:{r:1.5,w:'No',n:'Demasiado tostado y al ser lungo parece café malo quemado. No lo pude ni tomar.'},
+  vienna:{r:3,w:'No',n:'Café equilibrado, bastante normalito. Acidez baja. Medio aburrido. Aftertaste medio feo.'},
+  stockholm:{r:4,w:'Yes',n:'Un buen café, sin sorpresas. Mucho sabor a granos, medium roasted. Hasta d/e se la banca con el sabor.'},
+  cosi:{r:3,w:'No',n:'Very fruity, a bit acid also, not for me.'},
+  volutto:{r:4,w:'Yes',n:'Frutal, no tan pesado, no tan ácido tampoco. Me sorprendió para bien. Un poco suave para mi gusto pero buen café.'},
+  capriccio:{r:2.5,w:'No',n:'Crema clarita. Aroma ligeramente frutal. El sabor me da muchas notas a cereal, un poco aburrido.'},
+  aosta_hc:{r:3.5,w:'Maybe',n:'Rico, tostado liviano. Cereal o biscuit notes. Un toque frutal.'},
+  sicilia_hc:{r:3,w:'Maybe',n:'El aroma es intenso. Bastante intenso el sabor, tostado tirando a fuerte, pero aún rico.'},
+  palermo_hc:{r:2,w:'No',n:'Aroma super fuerte, especiado. Tostado bien oscuro. Parece un india.'},
+  decaf_hc:{r:4,w:'Yes',n:'Muy sabroso. Punto justo de intensidad para no zarparse. Tostado tirando a oscuro. Un toque frutal.'},
+  de_chiaro:{r:3,w:'No',n:'Quite intense and dark roasted. Could maybe drink this with milk.'},
+  fortado:{r:1.5,w:'No',n:'Amargo, quemado, sabor a vertuo.'},
+  inizio:{r:2.5,w:'No',n:'Bastante frutal/floral y ácido, pero se siente bastante tostado. Interesante por las notas cítricas.'},
+  costa_rica_vl:{r:1.5,w:'No',n:'Notas a cereales, muy tostado, oscuro. No mejoró ni como lungo.'},
+  ethiopia_vl:{r:3.5,w:'Maybe',n:'Frutal, con acidez, pero un poco opacado por ese típico sabor a quemado vertuo.'},
+  intenso_vl:{r:1.5,w:'No',n:'Amargo, quemado, típico sabor a vertuo que detesto. Sabe a café feo.'},
+  odacio:{r:2.5,w:'No',n:'A bit spicy or woody. Not terrible, but not tasty either.'},
+  melozio:{r:3,w:'No',n:'Se siente bastante quemado. Aguado. Notas a cereales y un poco cítrico.'},
+  solelio:{r:3.5,w:'Maybe',n:'La crema es mínima. Color muy clarito. Notas frutales, baja intensidad. Parece más un té que un café.'},
+  mexico_vl:{r:4,w:'Yes',n:'No tiene sabor a quemado como los otros. Intenso pero no quemado. Notas a madera. En el fondo algo frutal.'},
+  colombia_vl:{r:3,w:'Maybe',n:'No está mal. Un toque aguado. Le siento el sabor a frutas, como a vino. Me gusta más la versión OL.'},
+};
+
+const CATS={
+  'Caliente':{c:'#e05252'},'Frío / Iced':{c:'#52a8e0'},'Con Leche':{c:'#e8c547'},
+  'Cocktail':{c:'#8e52e0'},'Otro':{c:'#9A8F7A'}
+};
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let S={
+  tab:'journal',
+  tastings:{},inventory:{},recipes:[],settings:{budget:30},
+  search:'',  fsys:'OL',fcol:'all',sort:'rating',showUntasted:true,
+  rCat:'all',
+};
+
+// ── STORAGE ───────────────────────────────────────────────────────────────────
+async function load(){
+  try{
+    const m=await window.storage.get('nm');
+    if(m){const d=JSON.parse(m.value);S.tastings=d.t||{};S.inventory=d.v||{};S.settings=d.s||{budget:30};}
+    else{for(const k in IT)S.tastings[k]={...IT[k]};}
+    const r=await window.storage.get('nr');
+    if(r)S.recipes=JSON.parse(r.value);
+  }catch(e){for(const k in IT)S.tastings[k]={...IT[k]};}
+  render();
+}
+async function saveM(){try{await window.storage.set('nm',JSON.stringify({t:S.tastings,v:S.inventory,s:S.settings}));}catch(e){}}
+async function saveR(){try{await window.storage.set('nr',JSON.stringify(S.recipes));}catch(e){}}
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const byId=id=>COFFEES.find(c=>c.id===id);
+const gt=id=>S.tastings[id]||{r:null,w:null,n:''};
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function starsH(r){
+  if(r==null)return '<span style="color:var(--t3);font-size:11px">—</span>';
+  const f=Math.floor(r),h=r%1>=.5?1:0,e=5-f-h;
+  return`<div class="stars">${'<span class="s f">★</span>'.repeat(f)}${h?'<span class="s h">★</span>':''}${'<span class="s e">★</span>'.repeat(e)}</div>`;
+}
+function starInput(forId,cur){
+  const f=Math.floor(cur||0);
+  let h=`<div class="sinp" id="si-${forId}">`;
+  for(let i=1;i<=5;i++)h+=`<button type="button" onclick="setStar('${forId}',${i})" class="${i<=f?'on':''}" title="${i}★">★</button>`;
+  return h+`</div><input type="hidden" id="rv-${forId}" value="${cur||''}">`;
+}
+function setStar(id,v){
+  const cur=parseFloat(document.getElementById('rv-'+id).value)||0;
+  const nv=cur===v?v-0.5:v;
+  document.getElementById('rv-'+id).value=nv;
+  document.getElementById('si-'+id).querySelectorAll('button').forEach((b,i)=>b.classList.toggle('on',(i+1)<=Math.ceil(nv)));
+}
+function chipH(w){
+  if(!w)return'<span class="chip X">—</span>';
+  return`<span class="chip ${w}">${w==='Yes'?'✓ Compraría':w==='No'?'✗ No':'~ Tal vez'}</span>`;
+}
+function ibarH(v){
+  if(!v&&v!==0)return'<span style="color:var(--t3);font-size:10px">N/A</span>';
+  return`<div class="ibar-wrap"><div class="ibar"><div class="ibar-fill" style="width:${(v/13)*100}%"></div></div><span class="inum">${v}/13</span></div>`;
+}
+
+// ── JOURNAL ───────────────────────────────────────────────────────────────────
+function filteredCoffees(){
+  let l=[...COFFEES];
+  if(S.fsys!=='all')l=l.filter(c=>c.s===S.fsys);
+  if(S.fcol!=='all')l=l.filter(c=>c.col===S.fcol);
+  if(!S.showUntasted)l=l.filter(c=>gt(c.id).r!=null);
+  if(S.search){const q=S.search.toLowerCase();l=l.filter(c=>c.n.toLowerCase().includes(q)||c.fla.toLowerCase().includes(q)||c.col.toLowerCase().includes(q));}
+  l.sort((a,b)=>{
+    const ta=gt(a.id),tb=gt(b.id);
+    if(S.sort==='rating')return(tb.r||0)-(ta.r||0);
+    if(S.sort==='intensity')return(b.i||0)-(a.i||0);
+    if(S.sort==='name')return a.n.localeCompare(b.n);
+    if(S.sort==='price')return(a.p||99)-(b.p||99);
+    return 0;
+  });
+  return l;
+}
+
+function renderJournal(){
+  const all=S.fsys==='all'?COFFEES:COFFEES.filter(c=>c.s===S.fsys),tasted=all.filter(c=>gt(c.id).r!=null);
+  const avg=tasted.length?(tasted.reduce((s,c)=>s+(gt(c.id).r||0),0)/tasted.length).toFixed(1):'—';
+  const fav=all.filter(c=>(gt(c.id).r||0)>=4.5).length;
+  const buys=all.filter(c=>gt(c.id).w==='Yes').length;
+  const cols=[...new Set(COFFEES.filter(c=>S.fsys==='all'||c.s===S.fsys).map(c=>c.col))].sort();
+  const list=filteredCoffees();
+  return`
+  <div class="stats">
+    <div class="stat"><div class="stn">${tasted.length}/${all.length}</div><div class="stl">Cafés probados</div></div>
+    <div class="stat"><div class="stn">${avg}</div><div class="stl">Rating promedio</div></div>
+    <div class="stat"><div class="stn" style="color:var(--yes)">${fav}</div><div class="stl">Favoritos (≥4.5★)</div></div>
+    <div class="stat"><div class="stn" style="color:#6E9EC8">${buys}</div><div class="stl">Compraría de nuevo</div></div>
+  </div>
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+    ${[['OL','☕ Original Line'],['VL','🌀 Vertuo Line'],['all','Ambas']].map(([v,lbl])=>`<button onclick="S.fsys='${v}';S.fcol='all';render()" style="background:${S.fsys===v?'var(--acc)':'var(--s2)'};border:1px solid ${S.fsys===v?'var(--acc)':'var(--bdr)'};color:${S.fsys===v?'#000':'var(--t2)'};border-radius:var(--r);padding:7px 18px;font-size:13px;font-weight:${S.fsys===v?700:400};cursor:pointer;transition:all .2s">${lbl}</button>`).join('')}
+  </div>
+  <div class="filters">
+    <input class="fi" placeholder="🔍 Buscar nombre, sabor, colección..." value="${esc(S.search)}" oninput="S.search=this.value;render()">
+    <select class="fs" onchange="S.fcol=this.value;render()">
+      <option value="all">Todas las colecciones</option>
+      ${cols.map(c=>`<option value="${esc(c)}"${S.fcol===c?' selected':''}>${esc(c)}</option>`).join('')}
+    </select>
+    <select class="fs" onchange="S.sort=this.value;render()">
+      <option value="rating"${S.sort==='rating'?' selected':''}>Rating ↓</option>
+      <option value="name"${S.sort==='name'?' selected':''}>Nombre A-Z</option>
+      <option value="intensity"${S.sort==='intensity'?' selected':''}>Intensidad ↓</option>
+      <option value="price"${S.sort==='price'?' selected':''}>Precio ↑</option>
+    </select>
+    <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--t2);cursor:pointer;white-space:nowrap">
+      <input type="checkbox" ${S.showUntasted?'checked':''} onchange="S.showUntasted=this.checked;render()"> Sin tasting
+    </label>
+  </div>
+  <div class="grid">
+    ${list.map(c=>{
+      const t=gt(c.id),has=t.r!=null;
+      return`<div class="card" onclick="openCoffee('${c.id}')">
+        <div class="card-hd">
+          <div class="card-name">${esc(c.n)}${c.dec?' <small style="color:var(--t3)">Decaf</small>':''}${c.exo?' <small style="color:var(--acc2)">✦</small>':''}</div>
+          <span class="badge ${c.s}">${c.s}</span>
+        </div>
+        <div class="card-col">${esc(c.col)}${c.lim?' · <span style="color:var(--may)">Limited</span>':''}${c.milk?' · <span style="color:var(--t3)">Milk</span>':''}</div>
+        <div class="card-fla">${esc(c.fla)}</div>
+        <div class="card-ft">
+          <div style="display:flex;flex-direction:column;gap:5px">${ibarH(c.i)}${starsH(t.r)}</div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
+            ${chipH(t.w)}
+            <span style="font-size:11px;color:var(--t3)">${c.p?'€'+c.p.toFixed(2)+'/cáp':'—'}</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+  ${list.length===0?'<div class="empty"><div style="font-size:40px;margin-bottom:8px">☕</div><p>No hay cafés con esos filtros.</p></div>':''}`;
+}
+
+// ── INVENTORY ─────────────────────────────────────────────────────────────────
+function renderInventory(){
+  const tracked=COFFEES.filter(c=>S.inventory[c.id]?.tracked);
+  const untracked=COFFEES.filter(c=>!S.inventory[c.id]?.tracked);
+  const low=tracked.filter(c=>{const v=S.inventory[c.id];return v.boxes<v.min;});
+  const shopList=calcShop();
+  const totalVal=tracked.reduce((s,c)=>s+(S.inventory[c.id].boxes*(c.p||0)*10),0);
+  return`
+  <div class="stats">
+    <div class="stat"><div class="stn">${tracked.length}</div><div class="stl">En inventario</div></div>
+    <div class="stat"><div class="stn" style="color:var(--no)">${low.length}</div><div class="stl">Stock bajo</div></div>
+    <div class="stat"><div class="stn">€${totalVal.toFixed(2)}</div><div class="stl">Valor en stock</div></div>
+  </div>
+  ${tracked.length===0?`<div class="empty"><div style="font-size:38px;margin-bottom:8px">📦</div><p>Tu inventario está vacío.<br>Agregá cafés abajo o desde el detalle de cualquier café en el Journal.</p></div>`:`
+  <table class="itbl">
+    <thead><tr><th>Café</th><th>Línea</th><th>Cajas</th><th>Mínimo</th><th>Estado</th><th></th></tr></thead>
+    <tbody>
+    ${tracked.map(c=>{
+      const v=S.inventory[c.id],isLow=v.boxes<v.min;
+      return`<tr>
+        <td><strong>${esc(c.n)}</strong><br><span style="font-size:11px;color:var(--t3)">${esc(c.col)}</span></td>
+        <td><span class="badge ${c.s}">${c.s}</span></td>
+        <td><div class="bxc"><button onclick="chgBox('${c.id}',-1)">−</button><span class="bxn ${isLow?'low':''}">${v.boxes}</span><button onclick="chgBox('${c.id}',1)">+</button></div></td>
+        <td><div class="bxc"><button onclick="chgMin('${c.id}',-1)">−</button><span class="bxn">${v.min}</span><button onclick="chgMin('${c.id}',1)">+</button></div></td>
+        <td>${isLow?`<span style="color:var(--no);font-size:12px">⚠ Faltan ${v.min-v.boxes}</span>`:'<span style="color:var(--yes);font-size:12px">✓ OK</span>'}</td>
+        <td><button onclick="removeInv('${c.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:15px" title="Quitar">✕</button></td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table>`}
+
+  <div class="bp">
+    <div class="bptitle">🛒 Planificador de Suscripción Mensual</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <span style="font-size:13px;color:var(--t2)">Crédito mensual:</span>
+      <input type="number" value="${S.settings.budget}" min="0" max="500" style="background:var(--s3);border:1px solid var(--bdr);color:var(--txt);border-radius:6px;padding:5px 9px;font-size:13px;width:80px;outline:none" onchange="S.settings.budget=+this.value;saveM();render()"> €
+    </div>
+    ${shopList.length===0?`<p style="color:var(--t3);font-size:13px">${tracked.length===0?'Agregá cafés al inventario primero.':'¡Todo el stock está completo! Nada que reponer.'}</p>`:`
+    <div style="font-size:12px;color:var(--t3);margin-bottom:10px">Prioridad: mayor déficit primero.</div>
+    ${shopList.map(it=>`<div class="sitem">
+      <div>
+        <div style="font-weight:600;font-size:13px">${esc(it.c.n)}</div>
+        <div style="font-size:12px;color:var(--t2)">${it.b} caja${it.b>1?'s':''} × €${(it.c.p*10).toFixed(2)} = <strong>€${it.cost.toFixed(2)}</strong></div>
+      </div>
+      <span class="badge ${it.c.s}">${it.c.s}</span>
+    </div>`).join('')}
+    <div class="stotal">
+      <span>Total recomendado</span>
+      <span>€${shopList.reduce((s,i)=>s+i.cost,0).toFixed(2)} / €${S.settings.budget}</span>
+    </div>`}
+  </div>
+
+  <div style="margin-top:20px">
+    <div style="font-size:13px;font-weight:600;color:var(--t2);margin-bottom:10px">Agregar al inventario:</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <select id="inv-sel" class="fs" style="flex:1;min-width:180px">
+        <option value="">Seleccioná un café...</option>
+        ${untracked.map(c=>`<option value="${c.id}">${c.s} — ${esc(c.n)} (${esc(c.col)})</option>`).join('')}
+      </select>
+      <button class="btn ba" onclick="addInv()">+ Agregar</button>
+    </div>
+  </div>`;
+}
+
+function calcShop(){
+  let rem=S.settings.budget,list=[];
+  const needs=COFFEES.filter(c=>S.inventory[c.id]?.tracked&&c.p)
+    .map(c=>{const v=S.inventory[c.id];return{c,def:Math.max(0,v.min-v.boxes),bp:c.p*10};})
+    .filter(n=>n.def>0).sort((a,b)=>b.def-a.def);
+  for(const n of needs){
+    if(rem<=0)break;
+    const b=Math.min(n.def,Math.floor(rem/n.bp));
+    if(b>0){list.push({c:n.c,b,cost:b*n.bp});rem-=b*n.bp;}
+  }
+  return list;
+}
+function chgBox(id,d){if(!S.inventory[id])return;S.inventory[id].boxes=Math.max(0,S.inventory[id].boxes+d);saveM();render();}
+function chgMin(id,d){if(!S.inventory[id])return;S.inventory[id].min=Math.max(0,S.inventory[id].min+d);saveM();render();}
+function addInv(){const id=document.getElementById('inv-sel').value;if(!id)return;S.inventory[id]={tracked:true,boxes:0,min:1};saveM();render();}
+function removeInv(id){if(S.inventory[id])S.inventory[id].tracked=false;saveM();render();}
+function addInvDirect(id){S.inventory[id]={tracked:true,boxes:0,min:1};saveM();renderCoffeeModal(id,false);}
+
+// ── RECIPES ───────────────────────────────────────────────────────────────────
+function renderRecipes(){
+  const recs=S.recipes.filter(r=>S.rCat==='all'||r.cat===S.rCat);
+  return`
+  <div class="shdr">
+    <div class="stitle">🍹 Recetario</div>
+    <button class="btn ba" onclick="openRecipeModal()">+ Nueva receta</button>
+  </div>
+  <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px">
+    <button onclick="S.rCat='all';render()" style="background:${S.rCat==='all'?'var(--acc)':'var(--s2)'};border:1px solid ${S.rCat==='all'?'var(--acc)':'var(--bdr)'};color:${S.rCat==='all'?'#000':'var(--t2)'};border-radius:20px;padding:4px 13px;font-size:12px;cursor:pointer;font-weight:${S.rCat==='all'?600:400}">Todas</button>
+    ${Object.entries(CATS).map(([cat,cfg])=>`<button onclick="S.rCat='${cat}';render()" style="background:${S.rCat===cat?cfg.c+'33':'var(--s2)'};border:1px solid ${S.rCat===cat?cfg.c:'var(--bdr)'};color:${S.rCat===cat?cfg.c:'var(--t2)'};border-radius:20px;padding:4px 13px;font-size:12px;cursor:pointer">${cat}</button>`).join('')}
+  </div>
+  ${S.recipes.length===0?`<div class="empty"><div style="font-size:38px;margin-bottom:8px">🍹</div><p>Tu recetario está vacío.<br>Hacé clic en <strong>+ Nueva receta</strong> para agregar la primera.</p></div>`:`
+  <div class="rgrid">
+    ${recs.map(r=>{
+      const cfg=CATS[r.cat]||CATS['Otro'];
+      const cap=byId(r.capsule);
+      return`<div class="rcard" style="border-top:3px solid ${cfg.c}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+          <h3>${esc(r.name)}</h3>
+          <div style="display:flex;gap:4px">
+            <button onclick="openRecipeModal('${r.id}')" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:13px">✏</button>
+            <button onclick="delRecipe('${r.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:13px">✕</button>
+          </div>
+        </div>
+        <div class="rcat"><span class="cdot" style="background:${cfg.c}"></span>${esc(r.cat)}${cap?` · <span style="color:var(--acc)">${esc(cap.n)}</span>`:''}</div>
+        ${r.desc?`<div class="rec-desc" style="margin-bottom:6px">${esc(r.desc)}</div>`:''}
+        ${r.ingredients?`<div style="font-size:11px;color:var(--t2);margin-bottom:4px"><strong>Ingredientes:</strong> ${esc(r.ingredients)}</div>`:''}
+        ${r.steps?`<div style="font-size:11px;color:var(--t3);white-space:pre-line;line-height:1.4">${esc(r.steps)}</div>`:''}
+        <div style="margin-top:6px">${starsH(r.rating)}</div>
+      </div>`;
+    }).join('')}
+  </div>`}`;
+}
+
+function openRecipeModal(id=null){
+  const rec=id?S.recipes.find(r=>r.id===id):null;
+  document.getElementById('mt').textContent=id?'Editar receta':'Nueva receta';
+  const capOpts=COFFEES.map(c=>`<option value="${c.id}"${rec?.capsule===c.id?' selected':''}>${c.s} — ${esc(c.n)}</option>`).join('');
+  document.getElementById('mb').innerHTML=`
+  <div class="ef">
+    <div class="fgrid">
+      <div class="full"><label>Nombre</label><input class="efi" id="r-name" value="${esc(rec?.name||'')}" placeholder="Ej: Iced Colombia Tonic"></div>
+      <div><label>Categoría</label><select class="ef select" id="r-cat">${Object.keys(CATS).map(c=>`<option${rec?.cat===c?' selected':''}>${c}</option>`).join('')}</select></div>
+      <div><label>Cápsula</label><select class="ef select" id="r-cap"><option value="">Sin especificar</option>${capOpts}</select></div>
+      <div class="full"><label>Descripción</label><textarea id="r-desc" placeholder="Descripción general...">${esc(rec?.desc||'')}</textarea></div>
+      <div class="full"><label>Ingredientes</label><input class="efi" id="r-ing" value="${esc(rec?.ingredients||'')}" placeholder="Ej: 1 cápsula Indonesia, 100ml tónica, hielo, naranja"></div>
+      <div class="full"><label>Pasos</label><textarea id="r-steps" placeholder="1. Extraer espresso&#10;2. ...">${esc(rec?.steps||'')}</textarea></div>
+      <div><label>Tu rating (clic = entero, doble clic = medio)</label>${starInput('rec',rec?.rating)}</div>
+    </div>
+    <div class="brow">
+      <button class="btn bg" onclick="closeModal()">Cancelar</button>
+      <button class="btn ba" onclick="saveRecipe('${id||''}')">Guardar</button>
+    </div>
+  </div>`;
+  document.getElementById('ov').style.display='flex';
+}
+
+function saveRecipe(editId){
+  const name=document.getElementById('r-name').value.trim();
+  if(!name){alert('Escribí un nombre.');return;}
+  const rec={
+    id:editId||'rec_'+Date.now(),
+    name,cat:document.getElementById('r-cat').value,
+    capsule:document.getElementById('r-cap').value,
+    desc:document.getElementById('r-desc').value.trim(),
+    ingredients:document.getElementById('r-ing').value.trim(),
+    steps:document.getElementById('r-steps').value.trim(),
+    rating:parseFloat(document.getElementById('rv-rec').value)||null,
+  };
+  if(editId){const i=S.recipes.findIndex(r=>r.id===editId);if(i>=0)S.recipes[i]=rec;}
+  else S.recipes.push(rec);
+  saveR();closeModal();render();
+}
+function delRecipe(id){if(!confirm('¿Eliminar esta receta?'))return;S.recipes=S.recipes.filter(r=>r.id!==id);saveR();render();}
+
+// ── COFFEE MODAL ──────────────────────────────────────────────────────────────
+function openCoffee(id){renderCoffeeModal(id,false);document.getElementById('ov').style.display='flex';}
+
+function renderCoffeeModal(id,editing){
+  const c=byId(id),t=gt(id),has=t.r!=null;
+  document.getElementById('mt').innerHTML=`<div style="display:flex;align-items:center;gap:8px">${esc(c.n)}<span class="badge ${c.s}">${c.s}</span>${c.dec?'<small style="color:var(--t3)">Decaf</small>':''}</div>`;
+  if(!editing){
+    document.getElementById('mb').innerHTML=`
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:14px;flex-wrap:wrap">
+      <span style="font-size:12px;color:var(--t2)">${esc(c.col)}</span>
+      ${c.lim?'<span class="chip Maybe" style="font-size:10px">Limited</span>':''}
+      ${c.milk?'<span style="font-size:10px;color:var(--t3);background:var(--s3);padding:2px 7px;border-radius:12px">For Milk</span>':''}
+      ${c.exo?'<span style="font-size:10px;color:var(--acc2);background:rgba(200,169,110,.1);padding:2px 7px;border-radius:12px">✦ Exótico</span>':''}
+    </div>
+    <div class="drow">
+      <div class="di"><div class="dl">Intensidad</div><div class="dv">${c.i?c.i+' / 13':'N/A'}</div></div>
+      <div class="di"><div class="dl">Taza</div><div class="dv" style="font-size:12px">${esc(c.sz)}</div></div>
+      <div class="di"><div class="dl">Tostado</div><div class="dv" style="font-size:12px">${esc(c.ro)}</div></div>
+      <div class="di"><div class="dl">Precio/cáp</div><div class="dv">${c.p?'€'+c.p.toFixed(2):'—'}</div></div>
+    </div>
+    <div class="di" style="margin-bottom:11px"><div class="dl">Perfil de sabor</div><div style="font-size:13px;margin-top:3px">${esc(c.fla)}</div></div>
+    <div class="di" style="margin-bottom:14px"><div class="dl">Notas Nespresso</div><div style="font-size:12px;margin-top:3px;color:var(--t2)">${esc(c.an)}</div></div>
+    <div style="font-size:13px;font-weight:600;color:var(--acc);margin-bottom:9px">Tu Tasting</div>
+    ${has?`
+    <div class="drow">
+      <div class="di"><div class="dl">Rating</div><div style="display:flex;align-items:center;gap:6px;margin-top:3px">${starsH(t.r)}<span style="font-size:12px;color:var(--acc)">${t.r}/5</span></div></div>
+      <div class="di"><div class="dl">¿Lo comprás?</div><div style="margin-top:3px">${chipH(t.w)}</div></div>
+    </div>
+    <div class="dnotes">${esc(t.n)||'<em>Sin notas personales.</em>'}</div>`
+    :`<div class="dnotes" style="color:var(--t3);font-style:italic">Sin tasting registrado aún.</div>`}
+    <div class="brow">
+      <button class="btn bg" onclick="${S.inventory[id]?.tracked?`removeInv('${id}')`:` addInvDirect('${id}')`}">${S.inventory[id]?.tracked?'📦 Quitar del inventario':'📦 Agregar al inventario'}</button>
+      <button class="btn ba" onclick="renderCoffeeModal('${id}',true)">✏ ${has?'Editar tasting':'Agregar tasting'}</button>
+    </div>`;
+  } else {
+    document.getElementById('mb').innerHTML=`
+    <div class="ef">
+      <div><label>Rating (doble clic en misma estrella = medio punto)</label>${starInput(id,t.r)}</div>
+      <div><label>¿Lo comprarías?</label>
+        <select class="ef select" id="wb-${id}">
+          <option value="">—</option>
+          <option value="Yes"${t.w==='Yes'?' selected':''}>✓ Sí, lo compraría</option>
+          <option value="Maybe"${t.w==='Maybe'?' selected':''}>~ Tal vez</option>
+          <option value="No"${t.w==='No'?' selected':''}>✗ No</option>
+        </select>
+      </div>
+      <div><label>Notas personales</label>
+        <textarea id="nt-${id}" placeholder="Aroma, sabor, acidez, cuerpo, retrogusto, con qué lo tomaste...">${esc(t.n||'')}</textarea>
+      </div>
+      <div class="brow">
+        <button class="btn bg" onclick="renderCoffeeModal('${id}',false)">← Volver</button>
+        <button class="btn ba" onclick="saveTasting('${id}')">Guardar</button>
+      </div>
+    </div>`;
+  }
+}
+
+function saveTasting(id){
+  const rv=document.getElementById('rv-'+id).value;
+  S.tastings[id]={
+    r:rv?parseFloat(rv):null,
+    w:document.getElementById('wb-'+id).value||null,
+    n:document.getElementById('nt-'+id).value.trim(),
+  };
+  saveM();renderCoffeeModal(id,false);
+}
+
+// ── MODAL UTILS ───────────────────────────────────────────────────────────────
+function maybeClose(e){if(e.target===document.getElementById('ov'))closeModal();}
+function closeModal(){document.getElementById('ov').style.display='none';render();}
+
+// ── NAV & RENDER ──────────────────────────────────────────────────────────────
+function go(tab){
+  S.tab=tab;
+  document.querySelectorAll('nav button').forEach((b,i)=>b.classList.toggle('on',['journal','inventory','recipes'][i]===tab));
+  render();
+}
+function render(){
+  const app=document.getElementById('app');
+  if(S.tab==='journal')app.innerHTML=renderJournal();
+  else if(S.tab==='inventory')app.innerHTML=renderInventory();
+  else app.innerHTML=renderRecipes();
+}
+
+load();
+</script></body></html>
