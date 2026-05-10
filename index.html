@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Nespresso Hub</title>
+<title>Coffee Hub</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
@@ -44,8 +44,10 @@ main { max-width: 1400px; margin: 0 auto; padding: 14px; }
 .frow .fs { flex: 1; }
 /* CARDS */
 .grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-.card { background: var(--s2); border: 1px solid var(--bdr); border-radius: var(--r); padding: 13px; cursor: pointer; transition: border-color .2s; }
+.card { background: var(--s2); border: 1px solid var(--bdr); border-radius: var(--r); padding: 13px; cursor: pointer; transition: background .25s, border-color .25s, box-shadow .25s; }
 .card:active { border-color: var(--acc); }
+.card.clr { background: linear-gradient(105deg, var(--cap-t) 0%, var(--s2) 60%); border-left: 4px solid var(--cap-clr); }
+.card.clr:hover { background: linear-gradient(105deg, var(--cap-h) 0%, var(--s2) 55%); box-shadow: -3px 0 12px var(--cap-t); }
 .card-hd { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
 .card-name { font-weight: 600; font-size: 14px; line-height: 1.3; }
 .badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 12px; flex-shrink: 0; margin-left: 6px; white-space: nowrap; }
@@ -151,7 +153,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 14px; }
 </head>
 <body>
 <header>
-  <div class="logo">☕ NESPRESSO HUB <span>by Teo</span></div>
+  <div class="logo">☕ COFFEE HUB <span>by Teo</span></div>
   <nav id="topnav">
     <button class="on" data-tab="journal" onclick="go('journal')">📋 Journal</button>
     <button data-tab="inventory" onclick="go('inventory')">📦 Inventario</button>
@@ -368,25 +370,162 @@ const CATS = {
   'Con Leche':{c:'#e8c547'}, 'Cocktail':{c:'#8e52e0'}, 'Otro':{c:'#9A8F7A'}
 };
 
+
+const DEFAULT_RECIPES = [
+  {id:'dr_cortado',name:'Cortado',cat:'Con Leche',capsules:['scuro_bc','ristretto','arpeggio'],desc:'Espresso con un toque de leche vaporizada para suavizar sin perder intensidad.',ingredients:'1 cápsula Barista Scuro, 30ml leche entera',steps:'1. Calentar la taza con agua caliente y tirarla.\n2. Extraer el espresso (40ml) directo en la taza.\n[Aeroccino] Poner 30-40ml de leche y usar función Latte — da la temperatura y espuma justa para un cortado.\n3. Verter la leche despacio sobre el espresso.',rating:null},
+  {id:'dr_flatwhite',name:'Flat White',cat:'Con Leche',capsules:['scuro_bc','bianco_piccolo'],desc:'Más concentrado que un latte, más suave que un cortado. El equilibrio perfecto.',ingredients:'1 cápsula Barista Scuro (extraído largo), 120ml leche entera',steps:'1. Extraer espresso largo (~60ml) o dos extracciones cortas.\n[Aeroccino] Poner 120ml de leche y usar función Latte — produce la microespuma sedosa característica del flat white.\n2. Verter la leche en movimiento circular desde el centro de la taza.',rating:null},
+  {id:'dr_cappuccino',name:'Cappuccino',cat:'Con Leche',capsules:['arpeggio','scuro_bc','chiaro_bc'],desc:'El clásico. Espresso con partes iguales de leche vaporizada y espuma.',ingredients:'1 cápsula Arpeggio, 100ml leche entera',steps:'1. Extraer espresso (40ml) en taza de 150-180ml.\n[Aeroccino] Poner 100ml de leche y usar función Cappuccino — genera la espuma densa y voluminosa que lo define.\n2. Verter la leche primero y terminar volcando la espuma encima con cuchara.\n3. Opcional: espolvorear cacao en polvo.',rating:null},
+  {id:'dr_latte',name:'Latte Macchiato',cat:'Con Leche',capsules:['chiaro_bc','bianco_piccolo'],desc:'La leche primero, el café después. Capas visibles en vaso alto.',ingredients:'1 cápsula Barista Chiaro, 200ml leche entera',steps:'1. [Aeroccino] Poner 200ml de leche y usar función Latte — calienta y crea algo de espuma.\n2. Verter en vaso alto y dejar reposar 30 segundos (se separan espuma/leche).\n3. Extraer el espresso y verterlo despacio con una cuchara apoyada sobre el borde para que quede en capas.',rating:null},
+  {id:'dr_iced_latte',name:'Iced Latte',cat:'Frío / Iced',capsules:['scuro_bc','arpeggio','colombia_ol'],desc:'Espresso caliente sobre hielo y leche fría. El clásico de verano.',ingredients:'1 cápsula Barista Scuro, 150ml leche fría, hielo',steps:'1. Llenar un vaso alto con hielo.\n2. Agregar la leche fría.\n3. Extraer el espresso directo sobre el hielo.\n4. Revolver suavemente.',rating:null},
+  {id:'dr_tonic',name:'Espresso Tonic',cat:'Frío / Iced',capsules:['fc_espresso','colombia_ol','ethiopia_ol','no20'],desc:'El amargor de la tónica complementa perfectamente las notas frutales del espresso.',ingredients:'1 cápsula Festive Espresso, 150ml agua tónica fría, hielo, rodaja de limón',steps:'1. Llenar vaso con hielo y agregar la tónica fría.\n2. Extraer el espresso.\n3. Verterlo despacio por arriba para que flote.\n4. Decorar con limón. No revolver.',rating:null},
+  {id:'dr_mule',name:'Minted Mule',cat:'Cocktail',capsule:'fc_espresso',desc:'El cóctel de café con giro fresco. Funciona increíble con el Festive Espresso.',ingredients:'1 cápsula Festive Espresso, 60ml ginger beer, 30ml vodka, jugo de 1/2 lima, menta fresca, 2 hielos, 1 gotita de miel',steps:'1. Extraer el espresso y verterlo en el Aeroccino con 2 hielos y una gotita de miel.\n2. Usar función Iced Nitro — queda con una textura cremosa y fría única.\n3. En vaso con hielo fresco, agregar el vodka y el jugo de lima.\n4. Verter el café nitro sobre la mezcla.\n5. Agregar la ginger beer despacio por arriba.\n6. Decorar con menta fresca y rodaja de lima.',rating:null},
+
+  {id:'dr_mocha',name:'Mocha',cat:'Con Leche',capsules:['ristretto','arpeggio','scuro_bc'],desc:'La combinación clásica de café intenso con chocolate y leche. Confort en taza.',ingredients:'1 cápsula Ristretto, 2 cdtas cacao en polvo, 1 cdta azúcar, 150ml leche entera',steps:'1. Disolver el cacao y el azúcar con un chorrito de agua caliente en la taza.\n2. Extraer el espresso encima y mezclar bien.\n[Aeroccino] Poner 150ml de leche y usar función Latte para leche caliente con microespuma.\n3. Verter la leche sobre la mezcla de espresso y chocolate.\n4. Opcional: cacao o cacao amargo en polvo por arriba.',rating:null},
+  {id:'dr_shakerato',name:'Shakerato',cat:'Frío / Iced',capsules:['dharkan','ristretto','kazaar'],desc:'El clásico italiano de verano. Espresso shakeado con hielo y azúcar hasta hacer espuma.',ingredients:'1 cápsula Dharkan, 1 cdta azúcar, 6-8 cubos de hielo',steps:'1. Extraer el espresso y dejar enfriar 1 minuto.\n2. Llenar una coctelera con el hielo, el azúcar y el espresso.\n3. Shakear vigorosamente durante 10-15 segundos hasta que haga espuma.\n4. Colar en copa de martini o vaso corto.\n5. La espuma cremosa arriba es lo que lo hace especial.',rating:null},
+  {id:'dr_affogato',name:'Affogato',cat:'Otro',capsules:['arpeggio','ristretto','colombia_ol'],desc:'Literalmente "ahogado". El clásico postre italiano: helado de vainilla con espresso encima.',ingredients:'1 cápsula Arpeggio, 1-2 bochas helado de vainilla',steps:'1. Poner el helado en una taza o vaso frío.\n2. Extraer el espresso bien caliente inmediatamente antes de servir.\n3. Verter el espresso caliente sobre el helado en el momento.\n4. Servir enseguida — el contraste caliente/frío es parte del plato.',rating:null},
+  {id:'dr_doppio_freddo',name:'Doppio Freddo',cat:'Frío / Iced',capsules:['dharkan','ristretto'],desc:'Doble espresso frío batido hasta lograr una textura sedosa con microespuma. Muy italiano.',ingredients:'2 cápsulas Dharkan, 6-8 cubos de hielo',steps:'1. Extraer los dos espressos y dejar enfriar 2-3 minutos.\n[Aeroccino] Poner el café frío con 2-3 hielos y usar función Iced Nitro — bate y enfría creando una textura sedosa con microespuma fría.\n2. Verter en vaso corto frío.\n3. Sin azúcar — el café habla solo.',rating:null},
+  {id:'dr_viennois',name:'Café Viennois',cat:'Caliente',capsules:['livanto','venezia','cosi'],desc:'Un lungo vienés con leche batida encima. Elegante y diferente al cappuccino habitual.',ingredients:'1 cápsula Livanto (extraído largo), 80ml leche entera',steps:'1. Extraer el café en modo lungo (~80ml).\n[Aeroccino] Poner 80ml de leche y usar función Cappuccino — crea la espuma densa que queda flotando arriba.\n2. Con una cuchara, colocar la espuma encima del café sin que se mezcle.\n3. Opcional: canela o chocolate rallado encima.',rating:null},
+  {id:'dr_salted_caramel_mocha',name:'Salted Caramel Mocha',cat:'Con Leche',capsules:['scuro_bc','ristretto'],desc:'El capricho de los caprichos. Chocolate, caramelo salado y espresso intenso con leche cremosa.',ingredients:'1 cápsula Barista Scuro, 1 cdta cacao, 1 cdta sirope de caramelo, pizca de sal marina, 150ml leche',steps:'1. Poner el cacao y el sirope de caramelo en el fondo de la taza.\n2. Extraer el espresso encima y mezclar bien.\n[Aeroccino] Poner 150ml de leche y usar función Latte para microespuma cremosa.\n3. Verter la leche sobre la mezcla de espresso y chocolate.\n4. Terminar con una pizca de sal marina gruesa encima.',rating:null},
+  {id:'dr_con_panna',name:'Espresso con Panna',cat:'Caliente',capsules:['arpeggio','ristretto','indonesia'],desc:'Espresso con crema batida encima. Simple, indulgente, clásico. Perfecto de postre.',ingredients:'1 cápsula Arpeggio, 30ml crema de leche para batir, 1 cdta azúcar impalpable',steps:'1. Calentar la taza con agua caliente y tirarla.\n[Aeroccino] Poner 50ml de crema de leche fría y usar función Cold Foam — queda espesa y firme, casi idéntica al chantilly.\n2. Extraer el espresso en la taza caliente.\n3. Colocar la espuma fría encima del espresso con una cuchara sin mezclar.\n4. Tomar sin revolver — el espresso caliente debajo, la crema fría arriba.',rating:null},
+  {id:'dr_frappuccino',name:'Frappuccino de Vainilla',cat:'Frío / Iced',capsules:['vaniglia','vaniglia_dec','sweet_vanilla_vl','golden_caramel_vl'],desc:'El favorito. Cápsula de vainilla con syrup Monin, miel y leche fría — batido con la función Iced Frappé del Aeroccino.',ingredients:'1 cápsula Sweet Vanilla (VL) o Vaniglia (OL), 150ml leche entera fría, 1 cda syrup Monin vainilla, 1 cdta miel, hielo',steps:'1. Extraer la cápsula de vainilla y dejar enfriar unos minutos.\n2. Verter en el Aeroccino: la leche fría, el espresso, el syrup de vainilla y la miel.\n3. Agregar unos hielos.\n4. Usar la función Iced Frappé — bate y enfría todo junto hasta textura cremosa.\n5. Servir en vaso alto con hielo extra si querés más frío.',rating:null},
+];
+
 let S = {
-  tab:'journal', tastings:{}, inventory:{}, recipes:[], settings:{budget:30},
+  tab:'journal', tastings:{}, inventory:{}, recipes:DEFAULT_RECIPES.map(r=>({...r})), settings:{budget:30},
   search:'', fsys:'OL', fcol:'all', sort:'rating', showUntasted:true, rCat:'all',
 };
 
-async function load() {
+function load() {
   try {
-    const m = await window.storage.get('nm');
-    if (m) { const d = JSON.parse(m.value); S.tastings = d.t||{}; S.inventory = d.v||{}; S.settings = d.s||{budget:30}; }
+    const m = localStorage.getItem('nm');
+    if (m) { const d = JSON.parse(m); S.tastings = d.t||{}; S.inventory = d.v||{}; S.settings = d.s||{budget:30}; }
     else { for (const k in IT) S.tastings[k] = {...IT[k]}; }
-    const r = await window.storage.get('nr');
-    if (r) S.recipes = JSON.parse(r.value);
+    const r = localStorage.getItem('nr');
+    if (r) S.recipes = JSON.parse(r);
   } catch(e) { for (const k in IT) S.tastings[k] = {...IT[k]}; }
   render();
 }
-async function saveM() { try { await window.storage.set('nm', JSON.stringify({t:S.tastings,v:S.inventory,s:S.settings})); } catch(e){} }
-async function saveR() { try { await window.storage.set('nr', JSON.stringify(S.recipes)); } catch(e){} }
+function saveM() { try { localStorage.setItem('nm', JSON.stringify({t:S.tastings,v:S.inventory,s:S.settings})); } catch(e){} }
+function saveR() { try { localStorage.setItem('nr', JSON.stringify(S.recipes)); } catch(e){} }
 
 const byId = id => COFFEES.find(c => c.id === id);
+
+const CF = '#1C0902';
+const MK = '#EDD5A0';
+const FM = '#F6F0E4';
+const IC = '#B0D8F4';
+const CH = '#3A1204';
+const CA = '#C06808';
+const MN = '#4A9030';
+const GI = '#DDD060';
+const TC = '#B0E8A0';
+const IS = '#F2E8D0';
+
+const CUP_LAYERS = {
+  'dr_cortado':              [CF, MK, FM],
+  'dr_flatwhite':            [CF, CF, MK],
+  'dr_cappuccino':           [CF, MK, FM],
+  'dr_latte':                [MK, MK, CF],
+  'dr_iced_latte':           [CF, MK, IC],
+  'dr_tonic':                [CF, TC, IC],
+  'dr_mule':                 [CF, GI, MN],
+  'dr_mocha':                [CH, MK, FM],
+  'dr_shakerato':            [CF, CF, FM],
+  'dr_affogato':             [IS, IS, CF],
+  'dr_doppio_freddo':        [CF, CF, IC],
+  'dr_viennois':             [CF, CF, FM],
+  'dr_salted_caramel_mocha': [CH, MK, CA],
+  'dr_con_panna':            [CF, CF, FM],
+  'dr_frappuccino':          [CF, IC, FM],
+  'dr_minted_mule':          [CF, GI, MN],
+};
+const COLD_IDS = new Set(['dr_iced_latte','dr_tonic','dr_shakerato','dr_doppio_freddo','dr_frappuccino']);
+const COCKTAIL_IDS = new Set(['dr_mule','dr_minted_mule']);
+const AFFOGATO_IDS = new Set(['dr_affogato']);
+
+function cupSVG(id) {
+  const l = CUP_LAYERS[id] || [CF, CF, FM];
+  const uid = 'cp_' + id.replace(/\W/g,'');
+
+  if (AFFOGATO_IDS.has(id)) {
+    // Wide shallow dessert bowl (coupe shape)
+    const W=28, H=18, clip=`M0,0 H${W} L${W-4},${H} Q${W/2},${H+4} 4,${H} Z`;
+    const t=H/3;
+    return `<svg width="${W}" height="${H+6}" viewBox="0 0 ${W} ${H+6}" style="flex-shrink:0;margin-right:7px;display:inline-block;vertical-align:middle">
+      <defs><clipPath id="${uid}"><path d="${clip}"/></clipPath></defs>
+      <rect x="0" y="0"      width="${W}" height="${t}"   fill="${l[2]}" clip-path="url(#${uid})"/>
+      <rect x="0" y="${t}"   width="${W}" height="${t}"   fill="${l[1]}" clip-path="url(#${uid})"/>
+      <rect x="0" y="${t*2}" width="${W}" height="${t+4}" fill="${l[0]}" clip-path="url(#${uid})"/>
+      <line x1="2" y1="${t}"   x2="${W-2}" y2="${t}"   stroke="rgba(0,0,0,0.2)" stroke-width="0.6" clip-path="url(#${uid})"/>
+      <line x1="2" y1="${t*2}" x2="${W-2}" y2="${t*2}" stroke="rgba(0,0,0,0.2)" stroke-width="0.6" clip-path="url(#${uid})"/>
+      <path d="${clip}" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+      <line x1="0.6" y1="0.6" x2="${W-0.6}" y2="0.6" stroke="rgba(255,255,255,0.7)" stroke-width="1.1" stroke-linecap="round"/>
+    </svg>`;
+
+  } else if (COCKTAIL_IDS.has(id)) {
+    // Martini / cocktail glass (V-shape bowl + stem + base)
+    const W=26, BH=16;
+    const clip=`M1,0 H${W-1} L${W/2},${BH} Z`;
+    const t=BH/3;
+    // Divider line x coords at each boundary (triangle narrows as y increases)
+    const xAt = y => { const p=(y)/(BH); return {x1:1+p*(W/2-1), x2:(W-1)-p*(W/2-1)}; };
+    const d1=xAt(t), d2=xAt(t*2);
+    return `<svg width="${W}" height="${BH+14}" viewBox="0 0 ${W} ${BH+14}" style="flex-shrink:0;margin-right:7px;display:inline-block;vertical-align:middle">
+      <defs><clipPath id="${uid}"><path d="${clip}"/></clipPath></defs>
+      <rect x="0" y="0"      width="${W}" height="${t}"   fill="${l[2]}" clip-path="url(#${uid})"/>
+      <rect x="0" y="${t}"   width="${W}" height="${t}"   fill="${l[1]}" clip-path="url(#${uid})"/>
+      <rect x="0" y="${t*2}" width="${W}" height="${t}"   fill="${l[0]}" clip-path="url(#${uid})"/>
+      <line x1="${d1.x1}" y1="${t}"   x2="${d1.x2}" y2="${t}"   stroke="rgba(0,0,0,0.2)" stroke-width="0.6"/>
+      <line x1="${d2.x1}" y1="${t*2}" x2="${d2.x2}" y2="${t*2}" stroke="rgba(0,0,0,0.2)" stroke-width="0.6"/>
+      <path d="${clip}" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+      <line x1="1.5" y1="0.8" x2="${W-1.5}" y2="0.8" stroke="rgba(255,255,255,0.7)" stroke-width="1.1" stroke-linecap="round"/>
+      <line x1="${W/2}" y1="${BH}" x2="${W/2}" y2="${BH+10}" stroke="rgba(255,255,255,0.4)" stroke-width="1.4" stroke-linecap="round"/>
+      <line x1="${W/2-5}" y1="${BH+10}" x2="${W/2+5}" y2="${BH+10}" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
+
+  } else if (COLD_IDS.has(id)) {
+    // Tall glass
+    const W=18, H=26, clip=`M1,0 H${W-1} L${W-3},${H-2} Q${W/2},${H} 3,${H-2} Z`;
+    const t=H/3;
+    return `<svg width="${W+2}" height="${H}" viewBox="0 0 ${W+2} ${H}" style="flex-shrink:0;margin-right:7px;display:inline-block;vertical-align:middle">
+      <defs><clipPath id="${uid}"><path d="${clip}"/></clipPath></defs>
+      <rect x="0" y="0"      width="${W+2}" height="${t}"   fill="${l[2]}" clip-path="url(#${uid})"/>
+      <rect x="0" y="${t}"   width="${W+2}" height="${t}"   fill="${l[1]}" clip-path="url(#${uid})"/>
+      <rect x="0" y="${t*2}" width="${W+2}" height="${t}"   fill="${l[0]}" clip-path="url(#${uid})"/>
+      <line x1="2" y1="${t}"   x2="${W-2}" y2="${t}"   stroke="rgba(0,0,0,0.2)" stroke-width="0.6" clip-path="url(#${uid})"/>
+      <line x1="2" y1="${t*2}" x2="${W-2}" y2="${t*2}" stroke="rgba(0,0,0,0.2)" stroke-width="0.6" clip-path="url(#${uid})"/>
+      <path d="${clip}" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.2"/>
+      <line x1="2" y1="0.8" x2="${W-2}" y2="0.8" stroke="rgba(255,255,255,0.6)" stroke-width="1" stroke-linecap="round"/>
+    </svg>`;
+
+  } else {
+    // Espresso cup: squat, wide, with D-handle
+    const W=22, H=18, clip=`M0,0 H${W} L${W-2},${H} Q${W/2},${H+3} 2,${H} Z`;
+    const t=H/3;
+    return `<svg width="${W+11}" height="${H+5}" viewBox="0 0 ${W+11} ${H+5}" style="flex-shrink:0;margin-right:7px;display:inline-block;vertical-align:middle">
+      <defs><clipPath id="${uid}"><path d="${clip}"/></clipPath></defs>
+      <rect x="0" y="0"      width="${W}" height="${t}"   fill="${l[2]}" clip-path="url(#${uid})"/>
+      <rect x="0" y="${t}"   width="${W}" height="${t}"   fill="${l[1]}" clip-path="url(#${uid})"/>
+      <rect x="0" y="${t*2}" width="${W}" height="${t+3}" fill="${l[0]}" clip-path="url(#${uid})"/>
+      <line x1="0" y1="${t}"   x2="${W}"   y2="${t}"   stroke="rgba(0,0,0,0.2)" stroke-width="0.6" clip-path="url(#${uid})"/>
+      <line x1="0" y1="${t*2}" x2="${W-1}" y2="${t*2}" stroke="rgba(0,0,0,0.2)" stroke-width="0.6" clip-path="url(#${uid})"/>
+      <path d="${clip}" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.3"/>
+      <line x1="0.6" y1="0.6" x2="${W-0.6}" y2="0.6" stroke="rgba(255,255,255,0.7)" stroke-width="1.1" stroke-linecap="round"/>
+      <path d="M${W-1},4 C${W+9},4 ${W+9},${H-2} ${W-1},${H-2}" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
+  }
+}
+function recCapsules(r) {
+  if (Array.isArray(r.capsules)) return r.capsules.filter(Boolean);
+  if (r.capsule) return [r.capsule];
+  return [];
+}
+function capStyle(id) {
+  const hex = COLORS[id];
+  if (!hex || hex.startsWith('var')) return {cls:'', style:''};
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return {cls:'clr', style:`--cap-clr:${hex};--cap-t:rgba(${r},${g},${b},.18);--cap-h:rgba(${r},${g},${b},.30);`};
+}
 const gt = id => S.tastings[id] || {r:null,w:null,n:''};
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
@@ -427,6 +566,7 @@ function filteredCoffees() {
     if (S.sort==='intensity') return (b.i||0)-(a.i||0);
     if (S.sort==='name') return a.n.localeCompare(b.n);
     if (S.sort==='price') return (a.p||99)-(b.p||99);
+    if (S.sort==='collection') return a.col.localeCompare(b.col) || (gt(b.id).r||0)-(gt(a.id).r||0);
     return 0;
   });
   return l;
@@ -464,6 +604,7 @@ function renderJournal() {
           <option value="name"${S.sort==='name'?' selected':''}>Nombre</option>
           <option value="intensity"${S.sort==='intensity'?' selected':''}>Intensidad</option>
           <option value="price"${S.sort==='price'?' selected':''}>Precio</option>
+          <option value="collection"${S.sort==='collection'?' selected':''}>Colección</option>
         </select>
       </div>
       <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--t2);cursor:pointer">
@@ -473,7 +614,8 @@ function renderJournal() {
     <div class="grid">
       ${list.map(c => {
         const t = gt(c.id);
-        return `<div class="card" onclick="openCoffee('${c.id}')">
+        const cs = capStyle(c.id);
+        return `<div class="card ${cs.cls}" style="${cs.style}" onclick="openCoffee('${c.id}')">
           <div class="card-hd">
             <div class="card-name">${esc(c.n)}${c.dec?' <small style="color:var(--t3)">Decaf</small>':''}${c.exo?' <small style="color:var(--acc2)">✦</small>':''}</div>
             <span class="badge ${c.s}">${c.s}</span>
@@ -545,15 +687,8 @@ function renderInventory() {
       </div>`).join('')}
       <div class="stotal"><span>Total</span><span>€${shopList.reduce((s,i)=>s+i.cost,0).toFixed(2)} / €${S.settings.budget}</span></div>`}
     </div>
-    <div style="margin-top:16px">
-      <div style="font-size:12px;font-weight:600;color:var(--t2);margin-bottom:8px">Agregar café:</div>
-      <div style="display:flex;gap:8px">
-        <select id="inv-sel" style="background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:var(--r);padding:10px 11px;font-size:13px;flex:1;outline:none">
-          <option value="">Seleccioná un café...</option>
-          ${untracked.map(c=>`<option value="${c.id}">${c.s} — ${esc(c.n)}</option>`).join('')}
-        </select>
-        <button class="btn ba" onclick="addInv()">+</button>
-      </div>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end">
+      <button class="btn ba" onclick="openAddInvModal()">+ Agregar café</button>
     </div>`;
 }
 
@@ -571,7 +706,58 @@ function calcShop() {
 }
 function chgBox(id,d){if(!S.inventory[id])return;S.inventory[id].boxes=Math.max(0,S.inventory[id].boxes+d);saveM();render();}
 function chgMin(id,d){if(!S.inventory[id])return;S.inventory[id].min=Math.max(0,S.inventory[id].min+d);saveM();render();}
-function addInv(){const id=document.getElementById('inv-sel').value;if(!id)return;S.inventory[id]={tracked:true,boxes:0,min:1};saveM();render();}
+let AIF = {sys:'all', col:'all', q:''};
+function openAddInvModal() {
+  AIF = {sys:'all', col:'all', q:''};
+  document.getElementById('mt').textContent = '+ Agregar café al inventario';
+  renderAddInvModal();
+  document.getElementById('ov').style.display = 'flex';
+}
+function renderAddInvModal() {
+  const untracked = COFFEES.filter(c => !S.inventory[c.id]?.tracked);
+  const cols = ['all', ...new Set(untracked.map(c=>c.col))].sort();
+  let list = AIF.sys === 'all' ? untracked : untracked.filter(c=>c.s===AIF.sys);
+  if (AIF.col !== 'all') list = list.filter(c=>c.col===AIF.col);
+  if (AIF.q) list = list.filter(c=>c.n.toLowerCase().includes(AIF.q.toLowerCase()));
+  const sBtn = (v,lbl) => {
+    const on = AIF.sys===v;
+    return `<button onclick="AIF.sys='${v}';renderAddInvModal()" style="flex:1;border:1px solid ${on?'var(--acc)':'var(--bdr)'};background:${on?'var(--acc)':'var(--s2)'};color:${on?'#000':'var(--t2)'};border-radius:var(--r);padding:8px 4px;font-size:13px;font-weight:${on?700:400};cursor:pointer">${lbl}</button>`;
+  };
+  document.getElementById('mb').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:8px">${sBtn('all','Todas')}${sBtn('OL','Original')}${sBtn('VL','Vertuo')}</div>
+      <div style="display:flex;gap:8px">
+        <input value="${esc(AIF.q)}" oninput="AIF.q=this.value;renderAddInvModal()" placeholder="Buscar..." style="flex:1;background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:var(--r);padding:9px 11px;font-size:13px;outline:none">
+        <select onchange="AIF.col=this.value;renderAddInvModal()" style="background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:var(--r);padding:9px 11px;font-size:13px;outline:none">
+          ${cols.map(c=>`<option value="${esc(c)}"${AIF.col===c?' selected':''}>${c==='all'?'Todas las colecciones':esc(c)}</option>`).join('')}
+        </select>
+      </div>
+      <div style="max-height:360px;overflow-y:auto;display:flex;flex-direction:column;gap:1px">
+        ${list.length===0 ? '<p style="text-align:center;color:var(--t3);padding:20px;font-size:13px">No hay resultados.</p>' :
+          list.map(c => {
+            const clr = COLORS[c.id] || 'var(--bdr)';
+            const t = gt(c.id);
+            return `<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:var(--s2);border-radius:6px;cursor:pointer" onclick="addInvDirect2('${c.id}')">
+              <div style="width:4px;height:36px;border-radius:3px;background:${clr};flex-shrink:0"></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(c.n)}${c.dec?' <small style="color:var(--t3)">Decaf</small>':''}</div>
+                <div style="font-size:11px;color:var(--t3)">${esc(c.col)} · ${c.s}${t.r!=null?' · '+t.r+'★':''}</div>
+              </div>
+              <button onclick="event.stopPropagation();addInvDirect2('${c.id}')" style="background:var(--acc);border:none;color:#000;border-radius:6px;width:28px;height:28px;font-size:18px;cursor:pointer;font-weight:700;flex-shrink:0;line-height:1">+</button>
+            </div>`;
+          }).join('')}
+      </div>
+      <div style="display:flex;justify-content:flex-end;padding-top:4px">
+        <button class="btn bg" onclick="closeModal()">Cerrar</button>
+      </div>
+    </div>`;
+}
+function addInvDirect2(id) {
+  S.inventory[id] = {tracked:true, boxes:0, min:1};
+  saveM();
+  renderAddInvModal();
+  render();
+}
 function removeInv(id){if(S.inventory[id])S.inventory[id].tracked=false;saveM();render();}
 function addInvDirect(id){S.inventory[id]={tracked:true,boxes:0,min:1};saveM();renderCoffeeModal(id,false);}
 
@@ -592,16 +778,16 @@ function renderRecipes() {
     <div class="rgrid">
       ${recs.map(r => {
         const cfg = CATS[r.cat]||CATS['Otro'];
-        const cap = byId(r.capsule);
+        const capPills = recCapsules(r).map(id=>byId(id)).filter(Boolean).map(c=>`<span style="background:rgba(200,169,110,.12);color:var(--acc);border:1px solid rgba(200,169,110,.28);border-radius:10px;font-size:10px;font-weight:600;padding:1px 7px;white-space:nowrap">${esc(c.n)}</span>`).join('');
         return `<div class="rcard" style="border-top:3px solid ${cfg.c}">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
-            <h3>${esc(r.name)}</h3>
+            <h3 style="display:flex;align-items:center;gap:0">${cupSVG(r.id)}${esc(r.name)}</h3>
             <div style="display:flex;gap:4px">
               <button onclick="openRecipeModal('${r.id}')" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:16px;padding:2px">✏</button>
               <button onclick="delRecipe('${r.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:2px">✕</button>
             </div>
           </div>
-          <div class="rcat"><span class="cdot" style="background:${cfg.c}"></span>${esc(r.cat)}${cap?` · <span style="color:var(--acc)">${esc(cap.n)}</span>`:''}</div>
+          <div class="rcat" style="flex-wrap:wrap"><span class="cdot" style="background:${cfg.c}"></span>${esc(r.cat)}${capPills?`<span style="display:flex;gap:4px;flex-wrap:wrap;margin-left:4px">${capPills}</span>`:''}</div>
           ${r.desc?`<div style="font-size:13px;color:var(--t2);line-height:1.5;margin-bottom:6px">${esc(r.desc)}</div>`:''}
           ${r.ingredients?`<div style="font-size:12px;color:var(--t2);margin-bottom:4px"><strong>Ingredientes:</strong> ${esc(r.ingredients)}</div>`:''}
           ${r.steps?`<div style="font-size:12px;color:var(--t3);white-space:pre-line;line-height:1.4">${esc(r.steps)}</div>`:''}
@@ -614,13 +800,14 @@ function renderRecipes() {
 function openRecipeModal(id=null) {
   const rec = id ? S.recipes.find(r=>r.id===id) : null;
   document.getElementById('mt').textContent = id ? 'Editar receta' : 'Nueva receta';
-  const capOpts = COFFEES.map(c=>`<option value="${c.id}"${rec?.capsule===c.id?' selected':''}>${c.s} — ${esc(c.n)}</option>`).join('');
+  const _selCaps = recCapsules(rec||{});
+  const capOpts = COFFEES.map(c=>`<option value="${c.id}"${_selCaps.includes(c.id)?' selected':''}>${c.s} — ${esc(c.n)}</option>`).join('');
   document.getElementById('mb').innerHTML = `
     <div class="ef">
       <div class="fgrid">
         <div class="full"><label>Nombre</label><input class="efi" id="r-name" value="${esc(rec?.name||'')}" placeholder="Ej: Iced Colombia Tonic"></div>
         <div><label>Categoría</label><select class="ef select" id="r-cat">${Object.keys(CATS).map(c=>`<option${rec?.cat===c?' selected':''}>${c}</option>`).join('')}</select></div>
-        <div><label>Cápsula</label><select class="ef select" id="r-cap"><option value="">Sin especificar</option>${capOpts}</select></div>
+        <div class="full"><label>Cápsulas <span style="font-weight:400;color:var(--t3)">(Ctrl+click para seleccionar varias)</span></label><select multiple id="r-caps" style="height:130px;background:var(--s2);border:1px solid var(--bdr);color:var(--txt);border-radius:6px;padding:4px;font-size:13px;outline:none;width:100%">${capOpts}</select></div>
         <div class="full"><label>Descripción</label><textarea id="r-desc" placeholder="Descripción general...">${esc(rec?.desc||'')}</textarea></div>
         <div class="full"><label>Ingredientes</label><input class="efi" id="r-ing" value="${esc(rec?.ingredients||'')}" placeholder="Ej: 1 cápsula, 100ml tónica, hielo..."></div>
         <div class="full"><label>Pasos</label><textarea id="r-steps" placeholder="1. Extraer espresso&#10;2. ...">${esc(rec?.steps||'')}</textarea></div>
@@ -636,7 +823,8 @@ function openRecipeModal(id=null) {
 function saveRecipe(editId) {
   const name = document.getElementById('r-name').value.trim();
   if (!name) { alert('Escribí un nombre.'); return; }
-  const rec = { id:editId||'rec_'+Date.now(), name, cat:document.getElementById('r-cat').value, capsule:document.getElementById('r-cap').value, desc:document.getElementById('r-desc').value.trim(), ingredients:document.getElementById('r-ing').value.trim(), steps:document.getElementById('r-steps').value.trim(), rating:parseFloat(document.getElementById('rv-rec').value)||null };
+  const _caps = [...document.getElementById('r-caps').selectedOptions].map(o=>o.value).filter(Boolean);
+  const rec = { id:editId||'rec_'+Date.now(), name, cat:document.getElementById('r-cat').value, capsules:_caps, desc:document.getElementById('r-desc').value.trim(), ingredients:document.getElementById('r-ing').value.trim(), steps:document.getElementById('r-steps').value.trim(), rating:parseFloat(document.getElementById('rv-rec').value)||null };
   if (editId) { const i=S.recipes.findIndex(r=>r.id===editId); if(i>=0) S.recipes[i]=rec; } else S.recipes.push(rec);
   saveR(); closeModal(); render();
 }
@@ -661,7 +849,7 @@ function renderCoffeeModal(id, editing) {
         <div class="di"><div class="dl">Precio</div><div class="dv">${c.p?'€'+c.p.toFixed(2):'—'}</div></div>
       </div>
       <div class="di" style="margin-bottom:11px"><div class="dl">Perfil</div><div style="font-size:13px;margin-top:3px">${esc(c.fla)}</div></div>
-      <div class="di" style="margin-bottom:14px"><div class="dl">Nespresso</div><div style="font-size:12px;margin-top:3px;color:var(--t2)">${esc(c.an)}</div></div>
+      <div class="di" style="margin-bottom:14px"><div class="dl">Official Notes</div><div style="font-size:12px;margin-top:3px;color:var(--t2)">${esc(c.an)}</div></div>
       <div style="font-size:12px;font-weight:600;color:var(--acc);margin-bottom:9px">Tu Tasting</div>
       ${has ? `
       <div class="drow">
