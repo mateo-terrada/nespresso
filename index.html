@@ -263,17 +263,18 @@ const COFFEES = [
   {id:'roasted_hazelnut_vl',s:'VL',n:'Roasted Hazelnut',col:'Aromatizado (VL)',i:null,fla:'Hazelnut and roasted',sz:'Mug (230ml)',p:0.76,milk:0,dec:0,lim:0,exo:0,ro:'Medium',an:'Roasted hazelnut flavor with praline notes.'},
   {id:'festive_de_vl',s:'VL',n:'Festive Double Espresso',col:'Limited Edition (VL)',i:8,fla:'Woody and fruity',sz:'Double Espresso (80ml)',p:0.64,milk:0,dec:0,lim:1,exo:0,ro:'Dark',an:'Arabica blend. Toasted cereal, wood, and ripe red fruits.'},
   {id:'carafe',s:'VL',n:'Carafe Pour-Over Style',col:'Carafe',i:null,fla:'Smoky and roasted',sz:'Carafe (535ml)',p:1.09,milk:0,dec:0,lim:0,exo:0,ro:'Very Dark',an:'Intense roasted, smoky and earthy. Only for Next/Creatista.'},
+  {id:'descaling_kit',s:'OL',n:'Descaling Kit',col:'Accessories',i:null,fla:'Maintenance',sz:'Kit',p:0.99,milk:0,dec:0,lim:0,exo:0,ro:null,an:'Descaling kit for Nespresso machines. Use every 3 months or 300 capsules.'},
 ];
 
 const IT = {
   chiaro_bc:{r:1,w:'No',n:'Muy clarito, casi no se siente el sabor a través de la leche. Parece un latte y apenas le puse una gota.'},
   scuro_bc:{r:3.5,w:'Yes',n:'Buen blend con leche, se siente bien el sabor a café. Con flat o cortado va como piña.'},
   corto_bc:{r:2,w:'No',n:'Especiado, parece un india con leche. No es un buen match, no por lo intenso sino por lo especiado.'},
-  vaniglia:{r:1.5,w:'No',n:'Ya el aroma me da demasiado dulce. El café contrasta demasiado con el dulzor de la vainilla.'},
-  vaniglia_dec:{r:4.5,w:'No',n:'Como frappuccino me gusta mucho. Con algo de miel y vanilla syrup.'},
-  caramello:{r:2.5,w:'Maybe',n:'No está mal. No es tan fuerte el sabor a caramelo. Con leche no se siente el caramelo prácticamente.'},
+  vaniglia:{r:4,w:'No',n:'(fr.) Como frappuccino me gusta mucho. Solo es demasiado dulce — el café contrasta demasiado con la vainilla.',milk:true},
+  vaniglia_dec:{r:4,w:'No',n:'(fr.) Como frappuccino me gusta mucho. Con algo de miel y vanilla syrup. Solo no lo paso.',milk:true},
+  caramello:{r:4,w:'Maybe',n:'(fr.) Como frappuccino está muy bueno. Solo el caramelo no se zarpa pero no me convence del todo.',milk:true},
   cioccolatino:{r:3,w:'Maybe',n:'Me cuesta juzgar un café con sabor. Me gusta más de lo que esperaba. No es súper dulce a pesar del aroma fuerte a chocolate.'},
-  nocciola:{r:3,w:'Maybe',n:'El aroma es muy bueno. De los smakjes es de los que más gustan. Muy sabroso mezclado con vanilla syrup y miel.'},
+  nocciola:{r:4,w:'Maybe',n:'(fr.) Muy sabroso mezclado con vanilla syrup y miel. Como espresso no está mal pero el aroma lo destaca más con leche.',milk:true},
   venezia:{r:3.5,w:'Maybe',n:'Buen cuerpo, rico, equilibrado. (rep.) Intenso, tostado más oscuro. Tal vez un poco muy intenso, pero nada terrible.'},
   livanto:{r:4,w:'Maybe',n:'Me gusta. Un poco biscuit, algo de acidez, pasa fácil. Rico y balanceado. Dulce, un poco de acidez pero no se zarpa.'},
   roma:{r:3,w:'No',n:'Demasiado balanceado, casi que aburrido. Es un café que pasa fácil pero no sorprende ni destaca.'},
@@ -309,7 +310,7 @@ const IT = {
   buenos_aires:{r:3,w:'No',n:'Mucho aroma a cereales tostados, muy liviano. No me llama demasiado. (rep.) Lo siento más frutal.'},
   shanghai:{r:3.5,w:'Maybe',n:'Me sorprendió. Es cítrico pero pasa bien. Un poco liviano de cuerpo para mi gusto.'},
   tokyo:{r:4,w:'Maybe',n:'Rico aroma, buen tostado. Frutal/ácido pero bien, no se zarpa. Me recuerda al colombia, con menos cuerpo.'},
-  cape_town:{r:1.5,w:'No',n:'Demasiado tostado y al ser lungo parece café malo quemado. No lo pude ni tomar.'},
+  cape_town:{r:2,w:'No',n:'Demasiado tostado, parece café malo quemado. Como espresso un poco más tolerable pero igual no lo pase.'},
   vienna:{r:3,w:'No',n:'Café equilibrado, bastante normalito. Acidez baja. Medio aburrido. Aftertaste medio feo.'},
   stockholm:{r:4,w:'Yes',n:'Un buen café, sin sorpresas. Mucho sabor a granos, medium roasted. Hasta d/e se la banca con el sabor.'},
   cosi:{r:3,w:'No',n:'Very fruity, a bit acid also, not for me.'},
@@ -330,6 +331,7 @@ const IT = {
   solelio:{r:3.5,w:'Maybe',n:'La crema es mínima. Color muy clarito. Notas frutales, baja intensidad. Parece más un té que un café.'},
   mexico_vl:{r:4,w:'Yes',n:'No tiene sabor a quemado como los otros. Intenso pero no quemado. Notas a madera. En el fondo algo frutal.'},
   colombia_vl:{r:3,w:'Maybe',n:'No está mal. Un toque aguado. Le siento el sabor a frutas, como a vino. Me gusta más la versión OL.'},
+  miami:{r:3.5,w:'Maybe',n:'Me da como un split roast. Siento una parte muy tostada y otra que no. Algo frutal pero perdido. Esperaba más, aunque razonable mirando la descripción.'},
 };
 
 const COLORS = {
@@ -363,6 +365,7 @@ const COLORS = {
   sweet_vanilla_vl:'#F8F0E0', golden_caramel_vl:'#E09060', roasted_hazelnut_vl:'#D89080',
   pumpkin_vl:'#E87820', maple_vl:'#F0D8D0', festive_de_vl:'#6848B0',
   festive_tamarind_vl:'#D83030', festive_almond_vl:'#F0C8D0', carafe:'#4890A0',
+  'descaling_kit': '#4A9EC8',
 };
 
 const CATS = {
@@ -388,7 +391,11 @@ const DEFAULT_RECIPES = [
   {id:'dr_salted_caramel_mocha',name:'Salted Caramel Mocha',cat:'Con Leche',capsules:['scuro_bc','ristretto'],desc:'El capricho de los caprichos. Chocolate, caramelo salado y espresso intenso con leche cremosa.',ingredients:'1 cápsula Barista Scuro, 1 cdta cacao, 1 cdta sirope de caramelo, pizca de sal marina, 150ml leche',steps:'1. Poner el cacao y el sirope de caramelo en el fondo de la taza.\n2. Extraer el espresso encima y mezclar bien.\n[Aeroccino] Poner 150ml de leche y usar función Latte para microespuma cremosa.\n3. Verter la leche sobre la mezcla de espresso y chocolate.\n4. Terminar con una pizca de sal marina gruesa encima.',rating:null},
   {id:'dr_con_panna',name:'Espresso con Panna',cat:'Caliente',capsules:['arpeggio','ristretto','indonesia'],desc:'Espresso con crema batida encima. Simple, indulgente, clásico. Perfecto de postre.',ingredients:'1 cápsula Arpeggio, 30ml crema de leche para batir, 1 cdta azúcar impalpable',steps:'1. Calentar la taza con agua caliente y tirarla.\n[Aeroccino] Poner 50ml de crema de leche fría y usar función Cold Foam — queda espesa y firme, casi idéntica al chantilly.\n2. Extraer el espresso en la taza caliente.\n3. Colocar la espuma fría encima del espresso con una cuchara sin mezclar.\n4. Tomar sin revolver — el espresso caliente debajo, la crema fría arriba.',rating:null},
   {id:'dr_frappuccino',name:'Frappuccino de Vainilla',cat:'Frío / Iced',capsules:['vaniglia','vaniglia_dec','sweet_vanilla_vl','golden_caramel_vl'],desc:'El favorito. Cápsula de vainilla con syrup Monin, miel y leche fría — batido con la función Iced Frappé del Aeroccino.',ingredients:'1 cápsula Sweet Vanilla (VL) o Vaniglia (OL), 150ml leche entera fría, 1 cda syrup Monin vainilla, 1 cdta miel, hielo',steps:'1. Extraer la cápsula de vainilla y dejar enfriar unos minutos.\n2. Verter en el Aeroccino: la leche fría, el espresso, el syrup de vainilla y la miel.\n3. Agregar unos hielos.\n4. Usar la función Iced Frappé — bate y enfría todo junto hasta textura cremosa.\n5. Servir en vaso alto con hielo extra si querés más frío.',rating:null},
+  {id:'dr_frappe_ddl',name:'Frappuccino de Dulce de Leche',cat:'Frío / Iced',capsules:['caramello','nocciola'],desc:'El frappuccino más argentino. Cápsula de caramello con dulce de leche y syrup — cremoso, dulce y helado.',ingredients:'1 cápsula Caramello, 150ml leche entera fría, 1 cda dulce de leche (o syrup de caramelo), 1 cdta miel, hielo',steps:'1. Extraer la cápsula de caramello y dejar enfriar unos minutos.\n2. Disolver el dulce de leche con un chorrito de leche caliente para que no quede en grumos.\n3. [Aeroccino] Verter en el Aeroccino: la leche fría, el espresso, el dulce de leche disuelto y la miel con hielos.\n4. Usar la función Iced Frappé — bate todo junto hasta textura cremosa.\n5. Servir en vaso alto con hielo extra. Opcional: un hilo de dulce de leche por arriba para decorar.',rating:null},
 ];
+
+const IT_VER = 2;
+const REC_VER = 2;
 
 let S = {
   tab:'journal', tastings:{}, inventory:{}, recipes:DEFAULT_RECIPES.map(r=>({...r})), settings:{budget:30},
@@ -398,15 +405,36 @@ let S = {
 function load() {
   try {
     const m = localStorage.getItem('nm');
-    if (m) { const d = JSON.parse(m); S.tastings = d.t||{}; S.inventory = d.v||{}; S.settings = d.s||{budget:30}; }
-    else { for (const k in IT) S.tastings[k] = {...IT[k]}; }
+    if (m) {
+      const d = JSON.parse(m);
+      S.tastings = d.t||{}; S.inventory = d.v||{}; S.settings = d.s||{budget:30};
+      if ((d.itv||0) < IT_VER) {
+        for (const k in IT) {
+          if (!S.tastings[k]) S.tastings[k] = {...IT[k]};
+          else { S.tastings[k].r = IT[k].r; S.tastings[k].w = IT[k].w; if (IT[k].milk) S.tastings[k].milk = true; }
+        }
+        saveM();
+      }
+    } else { for (const k in IT) S.tastings[k] = {...IT[k]}; }
     const r = localStorage.getItem('nr');
-    if (r) S.recipes = JSON.parse(r);
+    if (r) {
+      const saved = JSON.parse(r);
+      // Merge any new DEFAULT_RECIPES not yet in saved list
+      if ((saved._rv||0) < REC_VER) {
+        const savedIds = new Set(saved.filter(x=>x.id).map(x=>x.id));
+        DEFAULT_RECIPES.forEach(dr => { if (!savedIds.has(dr.id)) saved.push({...dr}); });
+        saved._rv = REC_VER;
+        S.recipes = saved.filter(x=>x.id);
+        saveR();
+      } else {
+        S.recipes = saved.filter(x=>x.id);
+      }
+    }
   } catch(e) { for (const k in IT) S.tastings[k] = {...IT[k]}; }
   render();
 }
-function saveM() { try { localStorage.setItem('nm', JSON.stringify({t:S.tastings,v:S.inventory,s:S.settings})); } catch(e){} }
-function saveR() { try { localStorage.setItem('nr', JSON.stringify(S.recipes)); } catch(e){} }
+function saveM() { try { localStorage.setItem('nm', JSON.stringify({t:S.tastings,v:S.inventory,s:S.settings,itv:IT_VER})); } catch(e){} }
+function saveR() { try { localStorage.setItem('nr', JSON.stringify([...S.recipes, {_rv:REC_VER}])); } catch(e){} }
 
 const byId = id => COFFEES.find(c => c.id === id);
 
@@ -437,9 +465,10 @@ const CUP_LAYERS = {
   'dr_salted_caramel_mocha': [CH, MK, CA],
   'dr_con_panna':            [CF, CF, FM],
   'dr_frappuccino':          [CF, IC, FM],
+  'dr_frappe_ddl':            [CF, IC, FM],
   'dr_minted_mule':          [CF, GI, MN],
 };
-const COLD_IDS = new Set(['dr_iced_latte','dr_tonic','dr_shakerato','dr_doppio_freddo','dr_frappuccino']);
+const COLD_IDS = new Set(['dr_iced_latte','dr_tonic','dr_shakerato','dr_doppio_freddo','dr_frappuccino','dr_frappe_ddl']);
 const COCKTAIL_IDS = new Set(['dr_mule','dr_minted_mule']);
 const AFFOGATO_IDS = new Set(['dr_affogato']);
 
@@ -556,7 +585,7 @@ function ibarH(v) {
 }
 
 function filteredCoffees() {
-  let l = S.fsys==='all' ? [...COFFEES] : COFFEES.filter(c=>c.s===S.fsys);
+  let l = (S.fsys==='all' ? [...COFFEES] : COFFEES.filter(c=>c.s===S.fsys)).filter(c=>c.col!=='Accessories');
   if (S.fcol!=='all') l = l.filter(c=>c.col===S.fcol);
   if (!S.showUntasted) l = l.filter(c=>gt(c.id).r!=null);
   if (S.search) { const q=S.search.toLowerCase(); l=l.filter(c=>c.n.toLowerCase().includes(q)||c.fla.toLowerCase().includes(q)||c.col.toLowerCase().includes(q)); }
@@ -573,7 +602,7 @@ function filteredCoffees() {
 }
 
 function renderJournal() {
-  const base = S.fsys==='all' ? COFFEES : COFFEES.filter(c=>c.s===S.fsys);
+  const base = (S.fsys==='all' ? COFFEES : COFFEES.filter(c=>c.s===S.fsys)).filter(c=>c.col!=='Accessories');
   const tasted = base.filter(c=>gt(c.id).r!=null);
   const avg = tasted.length ? (tasted.reduce((s,c)=>s+(gt(c.id).r||0),0)/tasted.length).toFixed(1) : '—';
   const fav = base.filter(c=>(gt(c.id).r||0)>=4.5).length;
@@ -623,7 +652,7 @@ function renderJournal() {
           <div class="card-col">${esc(c.col)}${c.lim?' · <span style="color:var(--may)">Limited</span>':''}${c.milk?' · <span style="color:var(--t3)">Milk</span>':''}</div>
           <div class="card-fla">${esc(c.fla)}</div>
           <div class="card-ft">
-            <div style="display:flex;flex-direction:column;gap:5px">${ibarH(c.i)}${starsH(t.r)}</div>
+            <div style="display:flex;flex-direction:column;gap:5px">${ibarH(c.i)}<div style="display:flex;align-items:center;gap:4px">${starsH(t.r)}${t.milk?'<span style="font-size:9px;color:var(--t3);letter-spacing:0.2px">with milk</span>':''}</div></div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:5px">
               ${chipH(t.w)}<span style="font-size:11px;color:var(--t3)">${c.p?'€'+c.p.toFixed(2)+'/cáp':'—'}</span>
             </div>
@@ -650,10 +679,14 @@ function renderInventory() {
     <div class="inv-list">
       ${tracked.map(c => {
         const v=S.inventory[c.id], isLow=v.boxes<v.min;
-        return `<div class="inv-card">
+        const iclr = COLORS[c.id] || 'var(--bdr)';
+        return `<div class="inv-card" style="border-left:4px solid ${iclr}">
           <div class="inv-card-hd">
-            <div><div style="font-weight:600;font-size:14px">${esc(c.n)}${c.dec?' <small style="color:var(--t3)">Decaf</small>':''}</div>
-            <div style="font-size:11px;color:var(--t3);margin-top:2px">${esc(c.col)}</div></div>
+            <div style="display:flex;align-items:center;gap:9px">
+              <div style="width:10px;height:10px;border-radius:50%;background:${iclr};flex-shrink:0;border:1px solid rgba(255,255,255,.12)"></div>
+              <div><div style="font-weight:600;font-size:14px">${esc(c.n)}${c.dec?' <small style="color:var(--t3)">Decaf</small>':''}</div>
+              <div style="font-size:11px;color:var(--t3);margin-top:2px">${esc(c.col)}</div></div>
+            </div>
             <div style="display:flex;align-items:center;gap:8px">
               <span class="badge ${c.s}">${c.s}</span>
               <button onclick="removeInv('${c.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;padding:2px">✕</button>
@@ -768,23 +801,54 @@ function renderRecipes() {
     const c = v==='all' ? 'var(--acc)' : CATS[v]?.c || 'var(--acc)';
     return `<button onclick="S.rCat='${v}';render()" style="background:${on?(v==='all'?'var(--acc)':c+'33'):'var(--s2)'};border:1px solid ${on?c:'var(--bdr)'};color:${on?( v==='all'?'#000':c):'var(--t2)'};border-radius:20px;padding:5px 13px;font-size:12px;cursor:pointer;font-weight:${on?600:400}">${lbl}</button>`;
   }).join('');
+  // Daily recipe — deterministic seed from date, changes every day
+  const _dSeed = (() => { const d=new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); })();
+  const _daily = S.recipes.length ? S.recipes[_dSeed % S.recipes.length] : null;
+
+  const dailyCard = _daily ? (() => {
+    const r = _daily;
+    const cfg = CATS[r.cat]||CATS['Otro'];
+    const caps = recCapsules(r).map(id=>byId(id)).filter(Boolean);
+    const firstStep = (r.steps||'').split('\n').find(s=>s.trim()) || '';
+    return `<div onclick="openRecipeDetail('${r.id}')" style="background:linear-gradient(120deg,rgba(200,169,110,.13) 0%,var(--s2) 65%);border:1px solid rgba(200,169,110,.3);border-radius:var(--r);padding:16px;margin-bottom:20px;cursor:pointer;position:relative;overflow:hidden">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px">
+        <span style="font-size:10px;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:1px">☀ Receta del día</span>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:14px">
+        <div style="flex-shrink:0;margin-top:2px">${cupSVG(r.id)}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:17px;font-weight:700;color:var(--txt);margin-bottom:4px">${esc(r.name)}</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+            <span style="font-size:10px;font-weight:600;color:${cfg.c};background:${cfg.c}22;border:1px solid ${cfg.c}44;border-radius:10px;padding:1px 8px">${esc(r.cat)}</span>
+            ${caps.slice(0,2).map(c=>`<span style="font-size:10px;color:var(--t2)">${esc(c.n)}</span>`).join('<span style="color:var(--t3)"> · </span>')}${caps.length>2?`<span style="font-size:10px;color:var(--t3)"> +${caps.length-2}</span>`:''}
+          </div>
+          ${r.desc?`<div style="font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:8px">${esc(r.desc)}</div>`:''}
+          ${firstStep?`<div style="font-size:11px;color:var(--t3);font-style:italic">${esc(firstStep.length>70?firstStep.slice(0,70)+'…':firstStep)}</div>`:''}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px">
+        <span style="font-size:12px;font-weight:600;color:var(--acc);opacity:0.8">Ver receta →</span>
+      </div>
+    </div>`;
+  })() : '';
+
   return `
     <div class="shdr">
       <div class="stitle">🍹 Recetario</div>
       <button class="btn ba" onclick="openRecipeModal()">+ Nueva</button>
     </div>
+    ${dailyCard}
     <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px">${catBtns}</div>
-    ${S.recipes.length===0 ? `<div class="empty"><div style="font-size:36px;margin-bottom:8px">🍹</div><p>Tu recetario está vacío.<br>Tocá <strong>+ Nueva</strong> para agregar la primera receta.</p></div>` : `
-    <div class="rgrid">
-      ${recs.map(r => {
+    ${S.recipes.length===0 ? `<div class="empty"><div style="font-size:36px;margin-bottom:8px">🍹</div><p>Tu recetario está vacío.<br>Tocá <strong>+ Nueva</strong> para agregar la primera receta.</p></div>` : (() => {
+      const recCard = r => {
         const cfg = CATS[r.cat]||CATS['Otro'];
         const capPills = recCapsules(r).map(id=>byId(id)).filter(Boolean).map(c=>`<span style="background:rgba(200,169,110,.12);color:var(--acc);border:1px solid rgba(200,169,110,.28);border-radius:10px;font-size:10px;font-weight:600;padding:1px 7px;white-space:nowrap">${esc(c.n)}</span>`).join('');
-        return `<div class="rcard" style="border-top:3px solid ${cfg.c}">
+        return `<div class="rcard" style="border-top:3px solid ${cfg.c};cursor:pointer" onclick="openRecipeDetail('${r.id}')">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
             <h3 style="display:flex;align-items:center;gap:0">${cupSVG(r.id)}${esc(r.name)}</h3>
             <div style="display:flex;gap:4px">
-              <button onclick="openRecipeModal('${r.id}')" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:16px;padding:2px">✏</button>
-              <button onclick="delRecipe('${r.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:2px">✕</button>
+              <button onclick="event.stopPropagation();openRecipeModal('${r.id}')" style="background:none;border:none;color:var(--t2);cursor:pointer;font-size:16px;padding:2px">✏</button>
+              <button onclick="event.stopPropagation();delRecipe('${r.id}')" style="background:none;border:none;color:var(--t3);cursor:pointer;font-size:16px;padding:2px">✕</button>
             </div>
           </div>
           <div class="rcat" style="flex-wrap:wrap"><span class="cdot" style="background:${cfg.c}"></span>${esc(r.cat)}${capPills?`<span style="display:flex;gap:4px;flex-wrap:wrap;margin-left:4px">${capPills}</span>`:''}</div>
@@ -793,8 +857,70 @@ function renderRecipes() {
           ${r.steps?`<div style="font-size:12px;color:var(--t3);white-space:pre-line;line-height:1.4">${esc(r.steps)}</div>`:''}
           <div style="margin-top:6px">${starsH(r.rating)}</div>
         </div>`;
-      }).join('')}
-    </div>`}`;
+      };
+      if (S.rCat !== 'all') return `<div class="rgrid">${recs.map(recCard).join('')}</div>`;
+      const catOrder = Object.keys(CATS);
+      return catOrder.map(cat => {
+        const group = recs.filter(r => (r.cat||'Otro') === cat);
+        if (!group.length) return '';
+        const cfg = CATS[cat];
+        return `<div style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${cfg.c}"></span>
+            <span style="font-size:12px;font-weight:700;color:${cfg.c};text-transform:uppercase;letter-spacing:0.8px">${cat}</span>
+            <span style="font-size:11px;color:var(--t3)">${group.length}</span>
+          </div>
+          <div class="rgrid">${group.map(recCard).join('')}</div>
+        </div>`;
+      }).join('');
+    })()}`;
+}
+
+function openRecipeDetail(id) {
+  const r = S.recipes.find(x=>x.id===id);
+  if (!r) return;
+  const cfg = CATS[r.cat]||CATS['Otro'];
+  const caps = recCapsules(r).map(cid=>byId(cid)).filter(Boolean);
+  const capPills = caps.map(c=>`<span style="background:rgba(200,169,110,.12);color:var(--acc);border:1px solid rgba(200,169,110,.28);border-radius:10px;font-size:11px;font-weight:600;padding:2px 9px">${esc(c.n)}</span>`).join('');
+  const steps = (r.steps||'').split('\n').map(s => {
+    const isAero = s.startsWith('[Aeroccino]');
+    const text = isAero ? s.replace('[Aeroccino]','').trim() : s;
+    if (!text) return '';
+    if (isAero) return `<div style="display:flex;gap:10px;padding:8px 10px;background:rgba(200,169,110,.07);border-left:3px solid var(--acc);border-radius:0 6px 6px 0;margin:4px 0"><span style="font-size:11px;font-weight:700;color:var(--acc);flex-shrink:0;padding-top:1px">Aeroccino</span><span style="font-size:13px;color:var(--t2);line-height:1.5">${esc(text)}</span></div>`;
+    return `<div style="font-size:13px;color:var(--txt);line-height:1.6;padding:3px 0">${esc(s)}</div>`;
+  }).join('');
+  document.getElementById('mt').innerHTML = `<div style="display:flex;align-items:center;gap:8px">${cupSVG(r.id)}<span>${esc(r.name)}</span><span style="font-size:11px;font-weight:600;color:${cfg.c};background:${cfg.c}22;border:1px solid ${cfg.c}44;border-radius:10px;padding:1px 8px">${esc(r.cat)}</span></div>`;
+  document.getElementById('mb').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:16px">
+      ${capPills?`<div style="display:flex;gap:6px;flex-wrap:wrap">${capPills}</div>`:''}
+      ${r.desc?`<p style="font-size:14px;color:var(--t2);line-height:1.6;margin:0">${esc(r.desc)}</p>`:''}
+      ${r.ingredients?`<div style="background:var(--s2);border-radius:8px;padding:12px 14px">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Ingredientes</div>
+        <div style="font-size:13px;color:var(--txt);line-height:1.6">${esc(r.ingredients)}</div>
+      </div>`:''}
+      ${steps?`<div>
+        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Preparación</div>
+        ${steps}
+      </div>`:''}
+      <div style="border-top:1px solid var(--bdr);padding-top:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Tu review</div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          ${starInput('rdet',r.rating)}
+          <button class="btn ba" onclick="saveRecipeRating('${r.id}')" style="padding:6px 16px;font-size:13px">Guardar</button>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;padding-top:4px">
+        <button class="btn bg" onclick="closeModal()">Cerrar</button>
+        <button class="btn bg" onclick="closeModal();openRecipeModal('${r.id}')">✏ Editar receta</button>
+      </div>
+    </div>`;
+  document.getElementById('ov').style.display = 'flex';
+}
+function saveRecipeRating(id) {
+  const val = parseFloat(document.getElementById('rv-rdet').value)||null;
+  const rec = S.recipes.find(r=>r.id===id);
+  if (rec) { rec.rating = val; saveR(); render(); }
+  closeModal();
 }
 
 function openRecipeModal(id=null) {
@@ -853,7 +979,7 @@ function renderCoffeeModal(id, editing) {
       <div style="font-size:12px;font-weight:600;color:var(--acc);margin-bottom:9px">Tu Tasting</div>
       ${has ? `
       <div class="drow">
-        <div class="di"><div class="dl">Rating</div><div style="display:flex;align-items:center;gap:6px;margin-top:3px">${starsH(t.r)}<span style="font-size:12px;color:var(--acc)">${t.r}/5</span></div></div>
+        <div class="di"><div class="dl">Rating</div><div style="display:flex;align-items:center;gap:6px;margin-top:3px">${starsH(t.r)}<span style="font-size:12px;color:var(--acc)">${t.r}/5</span>${t.milk?'<span style="font-size:10px;color:var(--t3)">· with milk</span>':''}</div></div>
         <div class="di"><div class="dl">¿Lo comprás?</div><div style="margin-top:3px">${chipH(t.w)}</div></div>
       </div>
       <div class="dnotes">${esc(t.n)||'<em>Sin notas.</em>'}</div>` :
